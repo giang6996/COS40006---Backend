@@ -1,0 +1,17 @@
+using System.ComponentModel.DataAnnotations;
+
+namespace Server.Common
+{
+    public class Apartment
+    {
+        [Key]
+        public long Id { get; set; }
+        public long BuildingId { get; set; }
+        public string? Available { get; set; }
+        public string? ApartmentAddress { get; set; }
+
+        public Building Building { get; set; } = null!;
+        public ApartmentDetail? ApartmentDetail { get; set; }
+        public List<Resident> Residents { get; } = new();
+    }
+}
