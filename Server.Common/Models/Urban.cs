@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Server.Common
+namespace Server.Common.Models
 {
     public class Urban
     {

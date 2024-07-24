@@ -1,7 +1,7 @@
 using System.Security.Claims;
-using Server.Common;
+using Server.Common.Models;
 
-namespace Server.BusinessLogic.Services
+namespace Server.BusinessLogic.Interfaces
 {
     public interface IAuthLibrary
     {

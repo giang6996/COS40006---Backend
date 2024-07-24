@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using Server.Common;
+using Server.Common.Models;
 
 namespace Server.DataAccess
 {

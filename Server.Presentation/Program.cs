@@ -2,8 +2,10 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Server.BusinessLogic.Interfaces;
 using Server.BusinessLogic.Services;
 using Server.DataAccess;
+using Server.DataAccess.Interfaces;
 using Server.DataAccess.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -56,8 +58,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IAuthLibrary, AuthLibrary>();
-builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IAccountService, AccountService>();
 
 var app = builder.Build();
 

@@ -1,7 +1,7 @@
 // For basic implementation
 using System.ComponentModel.DataAnnotations;
 
-namespace Server.Common
+namespace Server.Common.Models
 {
     public class Role
     {

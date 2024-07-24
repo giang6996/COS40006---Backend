@@ -1,6 +1,6 @@
-using Server.Common;
+using Server.Common.Models;
 
-namespace Server.DataAccess.Repositories
+namespace Server.DataAccess.Interfaces
 {
     public interface IAccountRepository
     {

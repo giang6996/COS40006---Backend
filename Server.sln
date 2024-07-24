@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.BusinessLogic", "Ser
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.Presentation", "Server.Presentation\Server.Presentation.csproj", "{32DF7705-05D8-403E-8DE8-977CD961CAFE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.Models", "Server.Models\Server.Models.csproj", "{EDF72738-7EF9-4997-AE24-2FF95C17341F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{32DF7705-05D8-403E-8DE8-977CD961CAFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{32DF7705-05D8-403E-8DE8-977CD961CAFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{32DF7705-05D8-403E-8DE8-977CD961CAFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EDF72738-7EF9-4997-AE24-2FF95C17341F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EDF72738-7EF9-4997-AE24-2FF95C17341F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EDF72738-7EF9-4997-AE24-2FF95C17341F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EDF72738-7EF9-4997-AE24-2FF95C17341F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
