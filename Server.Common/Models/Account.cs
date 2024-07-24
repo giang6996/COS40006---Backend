@@ -9,13 +9,16 @@ namespace Server.Common
         public long TenantId { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
-        public string? Password { get; set; }
-        public string? Email { get; set; }
+        [Required]
+        public required string Password { get; set; }
+        [Required]
+        public required string Email { get; set; }
         public string? PhoneNumber { get; set; }
         public string? Status { get; set; }
 
         public List<Module> Modules { get; } = new();
         public Resident? Resident { get; set; }
         public Role? Role { get; set; }
+        public List<RefreshToken> RefreshTokens { get; } = new();
     }
 }

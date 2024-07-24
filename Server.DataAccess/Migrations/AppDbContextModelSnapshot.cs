@@ -22,6 +22,34 @@ namespace Server.DataAccess.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Server.Common.AccessToken", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<DateTime>("ExpirationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Revoked")
+                        .HasColumnType("bit");
+
+                    b.Property<long>("RtId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("RtId");
+
+                    b.ToTable("AccessTokens");
+                });
+
             modelBuilder.Entity("Server.Common.Account", b =>
                 {
                     b.Property<long>("Id")
@@ -31,6 +59,7 @@ namespace Server.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FirstName")
@@ -40,6 +69,7 @@ namespace Server.DataAccess.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
@@ -289,6 +319,34 @@ namespace Server.DataAccess.Migrations
                     b.ToTable("Modules");
                 });
 
+            modelBuilder.Entity("Server.Common.RefreshToken", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("AccountId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("ExpirationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Revoked")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.ToTable("RefreshTokens");
+                });
+
             modelBuilder.Entity("Server.Common.Resident", b =>
                 {
                     b.Property<long>("Id")
@@ -355,6 +413,17 @@ namespace Server.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Urbans");
+                });
+
+            modelBuilder.Entity("Server.Common.AccessToken", b =>
+                {
+                    b.HasOne("Server.Common.RefreshToken", "RefreshToken")
+                        .WithMany("AccessTokens")
+                        .HasForeignKey("RtId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("RefreshToken");
                 });
 
             modelBuilder.Entity("Server.Common.AccountModule", b =>
@@ -457,6 +526,17 @@ namespace Server.DataAccess.Migrations
                     b.Navigation("Document");
                 });
 
+            modelBuilder.Entity("Server.Common.RefreshToken", b =>
+                {
+                    b.HasOne("Server.Common.Account", "Account")
+                        .WithMany("RefreshTokens")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+                });
+
             modelBuilder.Entity("Server.Common.Resident", b =>
                 {
                     b.HasOne("Server.Common.Account", "Account")
@@ -497,6 +577,8 @@ namespace Server.DataAccess.Migrations
 
             modelBuilder.Entity("Server.Common.Account", b =>
                 {
+                    b.Navigation("RefreshTokens");
+
                     b.Navigation("Resident");
 
                     b.Navigation("Role");
@@ -533,6 +615,11 @@ namespace Server.DataAccess.Migrations
                     b.Navigation("Documents");
 
                     b.Navigation("Residents");
+                });
+
+            modelBuilder.Entity("Server.Common.RefreshToken", b =>
+                {
+                    b.Navigation("AccessTokens");
                 });
 
             modelBuilder.Entity("Server.Common.Urban", b =>

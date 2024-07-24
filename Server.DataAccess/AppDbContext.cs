@@ -18,6 +18,8 @@ namespace Server.DataAccess
         public DbSet<Apartment> Apartments { get; set; }
         public DbSet<ApartmentDetail> ApartmentDetails { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<AccessToken> AccessTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -100,6 +102,20 @@ namespace Server.DataAccess
                 .HasMany(a => a.Residents)
                 .WithOne(r => r.Apartment)
                 .HasForeignKey(r => r.ApartmentId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Account>()
+                .HasMany(a => a.RefreshTokens)
+                .WithOne(r => r.Account)
+                .HasForeignKey(r => r.AccountId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<RefreshToken>()
+                .HasMany(r => r.AccessTokens)
+                .WithOne(a => a.RefreshToken)
+                .HasForeignKey(a => a.RtId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
 
