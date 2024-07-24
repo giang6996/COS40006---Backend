@@ -24,9 +24,9 @@ namespace Server.DataAccess.Repositories
             await _db.SaveChangesAsync();
         }
 
-        public async Task<Account> GetAccountByEmailAsync(string email)
+        public async Task<Account?> GetAccountByEmailAsync(string email)
         {
-            return await _db.Accounts.Where(a => a.Email == email).FirstAsync();
+            return await _db.Accounts.Where(a => a.Email == email).FirstOrDefaultAsync();
         }
     }
 }

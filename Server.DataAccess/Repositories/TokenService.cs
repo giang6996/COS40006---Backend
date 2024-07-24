@@ -24,9 +24,20 @@ namespace Server.DataAccess.Repositories
             return await _db.RefreshTokens.Where(r => r.Value == refreshTokenValue).FirstOrDefaultAsync();
         }
 
+        public async Task<AccessToken?> GetAccessTokenAsync(string accessTokenValue)
+        {
+            return await _db.AccessTokens.Where(a => a.Value == accessTokenValue).FirstOrDefaultAsync();
+        }
+
         public async Task AddAccessTokenAsync(AccessToken accessToken)
         {
             _db.AccessTokens.Add(accessToken);
+            await _db.SaveChangesAsync();
+        }
+
+        public async Task RevokeAccessToken(AccessToken token)
+        {
+            token.Revoked = true;
             await _db.SaveChangesAsync();
         }
     }

@@ -6,6 +6,6 @@ namespace Server.DataAccess.Interfaces
     {
         bool CheckAccountExist(string email);
         Task AddAccountAsync(Account account);
-        Task<Account> GetAccountByEmailAsync(string email);
+        Task<Account?> GetAccountByEmailAsync(string email);
     }
 }

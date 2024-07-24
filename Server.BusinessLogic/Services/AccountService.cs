@@ -2,6 +2,7 @@ using Server.BusinessLogic.Interfaces;
 using Server.Common.Models;
 using Server.DataAccess.Interfaces;
 using Server.Models.ResponseModels;
+using Server.Models.DTOs.Account;
 
 namespace Server.BusinessLogic.Services
 {
@@ -18,37 +19,31 @@ namespace Server.BusinessLogic.Services
             _tokenService = tokenService;
         }
 
-        public async Task<Token> RegisterAsync(Server.Models.DTOs.Account account)
+        public async Task<Token> RegisterAsync(RegisterRequest request)
         {
-            if (account == null)
-                throw new ArgumentNullException(nameof(account));
-
-            if (_accountRepository.CheckAccountExist(account.Email))
+            if (_accountRepository.CheckAccountExist(request.Email))
                 throw new InvalidOperationException("This email already exists!");
 
-            string passwordHashed = BCrypt.Net.BCrypt.HashPassword(account.Password);
+            string passwordHashed = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
-            Server.Common.Models.Account accountToDb = new()
+            Account account = new()
             {
                 TenantId = 0,
-                FirstName = account.FirstName,
-                LastName = account.LastName,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
                 Password = passwordHashed,
-                Email = account.Email,
+                Email = request.Email,
             };
 
-            await _accountRepository.AddAccountAsync(accountToDb);
+            await _accountRepository.AddAccountAsync(account);
 
-            var accountFromDb = await _accountRepository.GetAccountByEmailAsync(account.Email);
-            var token = _authLibrary.Generate(accountFromDb);
-
+            var token = _authLibrary.Generate(account);
             if (token is (string at, string rt))
             {
-                (string accessTokenValue, string refreshTokenValue) = (at, rt);
                 RefreshToken refreshToken = new()
                 {
-                    Value = refreshTokenValue,
-                    AccountId = accountFromDb.Id,
+                    Value = rt,
+                    AccountId = account.Id,
                     ExpirationDate = DateTime.Now.AddDays(7),
                     Revoked = false,
                 };
@@ -56,7 +51,47 @@ namespace Server.BusinessLogic.Services
 
                 var accessToken = new AccessToken()
                 {
-                    Value = accessTokenValue,
+                    Value = at,
+                    RtId = refreshToken.Id,
+                    ExpirationDate = DateTime.Now.AddMinutes(10),
+                    Revoked = false,
+                };
+                await _tokenService.AddAccessTokenAsync(accessToken);
+
+                Token returnToken = new()
+                {
+                    AccessToken = at,
+                    RefreshToken = rt,
+                };
+
+                return returnToken;
+            }
+
+            throw new InvalidOperationException("Failed to generate tokens.");
+        }
+
+        public async Task<Token> LoginAsync(LoginRequest request)
+        {
+            Account? account = await _accountRepository.GetAccountByEmailAsync(request.Email) ?? throw new Exception("Account not found");
+
+            if (!BCrypt.Net.BCrypt.Verify(request.Password, account.Password))
+                throw new Exception("Incorrect Password");
+
+            var token = _authLibrary.Generate(account);
+            if (token is (string at, string rt))
+            {
+                RefreshToken refreshToken = new()
+                {
+                    Value = rt,
+                    AccountId = account.Id,
+                    ExpirationDate = DateTime.Now.AddDays(7),
+                    Revoked = false,
+                };
+                await _tokenService.AddRefreshTokenAsync(refreshToken);
+
+                AccessToken accessToken = new()
+                {
+                    Value = at,
                     RtId = refreshToken.Id,
                     ExpirationDate = DateTime.Now.AddDays(2),
                     Revoked = false,
@@ -65,8 +100,8 @@ namespace Server.BusinessLogic.Services
 
                 Token returnToken = new()
                 {
-                    AccessToken = accessTokenValue.ToString(),
-                    RefreshToken = refreshTokenValue.ToString(),
+                    AccessToken = at,
+                    RefreshToken = rt,
                 };
 
                 return returnToken;

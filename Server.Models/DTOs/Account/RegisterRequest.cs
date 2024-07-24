@@ -1,6 +1,6 @@
-namespace Server.Models.DTOs
+namespace Server.Models.DTOs.Account
 {
-    public class Account
+    public class RegisterRequest
     {
         public string? FirstName { get; set; }
         public string? LastName { get; set; }

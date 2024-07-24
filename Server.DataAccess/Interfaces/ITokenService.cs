@@ -5,7 +5,9 @@ namespace Server.DataAccess.Interfaces
     public interface ITokenService
     {
         Task AddRefreshTokenAsync(RefreshToken refreshToken);
-        Task<RefreshToken?> GetRefreshTokenAsync(string refreshTokenValue);
         Task AddAccessTokenAsync(AccessToken accessToken);
+        Task<RefreshToken?> GetRefreshTokenAsync(string refreshTokenValue);
+        Task<AccessToken?> GetAccessTokenAsync(string refreshTokenValue);
+        Task RevokeAccessToken(AccessToken token);
     }
 }

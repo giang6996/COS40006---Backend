@@ -1,14 +1,14 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Server.BusinessLogic.Interfaces;
-using Server.Models.DTOs;
+using Server.Models.DTOs.Account;
 
 namespace Server.Presentation.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/auth/[controller]")]
     [AllowAnonymous]
-    public class RegisterController : Controller
+    public class RegisterController : ControllerBase
     {
         private readonly IAccountService _accountService;
 
@@ -18,11 +18,16 @@ namespace Server.Presentation.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register([FromBody] Account account)
+        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
+            if (request == null)
+            {
+                return BadRequest(new { message = "Invalid register request." });
+            }
+
             try
             {
-                var token = await _accountService.RegisterAsync(account);
+                var token = await _accountService.RegisterAsync(request);
 
                 Response.Cookies.Append("refreshToken", token.RefreshToken, new CookieOptions
                 {
