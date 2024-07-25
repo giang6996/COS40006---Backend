@@ -9,5 +9,6 @@ namespace Server.BusinessLogic.Interfaces
         public object Generate(Account account, bool includeRefreshToken = true);
         public ClaimsPrincipal? Validate(string accessToken, bool validateLifetimeParam = false);
         public Task<Token> GenerateNewToken(string accessToken, string refreshToken);
+        public Task<Account> FetchAccount(string accessToken);
     }
 }

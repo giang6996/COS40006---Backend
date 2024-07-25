@@ -10,13 +10,13 @@ namespace Server.BusinessLogic.Services
     {
         private readonly IAuthLibrary _authLibrary;
         private readonly IAccountRepository _accountRepository;
-        private readonly ITokenService _tokenService;
+        private readonly ITokenRepository _tokenRepository;
 
-        public AccountService(IAuthLibrary authLibrary, IAccountRepository accountRepository, ITokenService tokenService)
+        public AccountService(IAuthLibrary authLibrary, IAccountRepository accountRepository, ITokenRepository tokenRepository)
         {
             _authLibrary = authLibrary;
             _accountRepository = accountRepository;
-            _tokenService = tokenService;
+            _tokenRepository = tokenRepository;
         }
 
         public async Task<Token> RegisterAsync(RegisterRequest request)
@@ -47,7 +47,7 @@ namespace Server.BusinessLogic.Services
                     ExpirationDate = DateTime.Now.AddDays(7),
                     Revoked = false,
                 };
-                await _tokenService.AddRefreshTokenAsync(refreshToken);
+                await _tokenRepository.AddRefreshTokenAsync(refreshToken);
 
                 var accessToken = new AccessToken()
                 {
@@ -56,7 +56,7 @@ namespace Server.BusinessLogic.Services
                     ExpirationDate = DateTime.Now.AddMinutes(10),
                     Revoked = false,
                 };
-                await _tokenService.AddAccessTokenAsync(accessToken);
+                await _tokenRepository.AddAccessTokenAsync(accessToken);
 
                 Token returnToken = new()
                 {
@@ -87,7 +87,7 @@ namespace Server.BusinessLogic.Services
                     ExpirationDate = DateTime.Now.AddDays(7),
                     Revoked = false,
                 };
-                await _tokenService.AddRefreshTokenAsync(refreshToken);
+                await _tokenRepository.AddRefreshTokenAsync(refreshToken);
 
                 AccessToken accessToken = new()
                 {
@@ -96,7 +96,7 @@ namespace Server.BusinessLogic.Services
                     ExpirationDate = DateTime.Now.AddDays(2),
                     Revoked = false,
                 };
-                await _tokenService.AddAccessTokenAsync(accessToken);
+                await _tokenRepository.AddAccessTokenAsync(accessToken);
 
                 Token returnToken = new()
                 {

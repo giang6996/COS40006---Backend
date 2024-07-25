@@ -4,11 +4,11 @@ using Server.DataAccess.Interfaces;
 
 namespace Server.DataAccess.Repositories
 {
-    public class TokenService : ITokenService
+    public class TokenRepository : ITokenRepository
     {
         private readonly AppDbContext _db;
 
-        public TokenService(AppDbContext db)
+        public TokenRepository(AppDbContext db)
         {
             _db = db;
         }
@@ -39,6 +39,17 @@ namespace Server.DataAccess.Repositories
         {
             token.Revoked = true;
             await _db.SaveChangesAsync();
+        }
+
+        public async Task<Account?> FetchAccountFromDb(string accessToken)
+        {
+            var account = await (from at in _db.AccessTokens
+                                 join rt in _db.RefreshTokens on at.RtId equals rt.Id
+                                 join a in _db.Accounts on rt.AccountId equals a.Id
+                                 where at.Value == accessToken
+                                 select a).FirstOrDefaultAsync();
+
+            return account;
         }
     }
 }

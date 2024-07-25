@@ -14,14 +14,13 @@ namespace Server.BusinessLogic.Services
     public class AuthLibrary : IAuthLibrary
     {
         private readonly IConfiguration _configuration;
-        private readonly ITokenService _tokenService;
+        private readonly ITokenRepository _tokenRepository;
         private readonly IAccountRepository _accountRepository;
 
-
-        public AuthLibrary(IConfiguration configuration, ITokenService tokenService, IAccountRepository accountRepository)
+        public AuthLibrary(IConfiguration configuration, ITokenRepository tokenRepository, IAccountRepository accountRepository)
         {
             _configuration = configuration;
-            _tokenService = tokenService;
+            _tokenRepository = tokenRepository;
             _accountRepository = accountRepository;
         }
 
@@ -97,7 +96,7 @@ namespace Server.BusinessLogic.Services
 
         public async Task<Token> GenerateNewToken(string accessToken, string refreshToken)
         {
-            AccessToken? oldAccessToken = await _tokenService.GetAccessTokenAsync(accessToken);
+            AccessToken? oldAccessToken = await _tokenRepository.GetAccessTokenAsync(accessToken);
             long rtIdFromCurrentAt = -1;
 
             if (oldAccessToken != null)
@@ -121,7 +120,7 @@ namespace Server.BusinessLogic.Services
                 Account? account = await _accountRepository.GetAccountByEmailAsync(userEmail) ?? throw new InvalidOperationException("Account not found.");
 
                 // Get the refresh token from the database by value
-                RefreshToken? oldRefreshToken = await _tokenService.GetRefreshTokenAsync(refreshToken) ?? throw new SecurityException("Refresh token not found.");
+                RefreshToken? oldRefreshToken = await _tokenRepository.GetRefreshTokenAsync(refreshToken) ?? throw new SecurityException("Refresh token not found.");
 
                 // Check if the refresh token is expired
                 if (oldRefreshToken.ExpirationDate < DateTime.Now)
@@ -150,9 +149,9 @@ namespace Server.BusinessLogic.Services
                         ExpirationDate = DateTime.Now.AddMinutes(2),
                         Revoked = false,
                     };
-                    await _tokenService.AddAccessTokenAsync(newAccessTokenEntity);
+                    await _tokenRepository.AddAccessTokenAsync(newAccessTokenEntity);
 
-                    await _tokenService.RevokeAccessToken(oldAccessToken);
+                    await _tokenRepository.RevokeAccessToken(oldAccessToken);
 
                     Token newToken = new()
                     {
@@ -165,6 +164,16 @@ namespace Server.BusinessLogic.Services
             }
 
             throw new ArgumentNullException(nameof(accessToken), "Invalid access token.");
+        }
+
+        public async Task<Account> FetchAccount(string accessToken)
+        {
+            if (accessToken.IsNullOrEmpty())
+                throw new ArgumentException("Require access token");
+
+            Account? account = await _tokenRepository.FetchAccountFromDb(accessToken) ?? throw new Exception("Account not found from this access token");
+
+            return account;
         }
     }
 }

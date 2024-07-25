@@ -7,7 +7,7 @@ namespace Server.Presentation.Controllers
     [ApiController]
     [Route("api/auth")]
     [Authorize]
-    public class TokenController : Controller
+    public class TokenController : ControllerBase
     {
         private readonly IAuthLibrary _authLibrary;
 
