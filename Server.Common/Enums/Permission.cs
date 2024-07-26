@@ -12,6 +12,8 @@ namespace Server.Common.Enums
         UpdateComplain,
         DeleteComplain,
 
+        ReadAllNewResidentRequest,
+
         CreateAccount,
         ReadAccount,
         UpdateAccount,

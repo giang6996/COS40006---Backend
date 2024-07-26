@@ -67,6 +67,8 @@ builder.Services.AddScoped<IPropertyDossierService, PropertyDossierService>();
 builder.Services.AddScoped<IPropertyDossierRepository, PropertyDossierRepository>();
 builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
 builder.Services.AddScoped<IAuthorizeRepository, AuthorizeRepository>();
+builder.Services.AddScoped<IResidentService, ResidentService>();
+builder.Services.AddScoped<IResidentRepository, ResidentRepository>();
 
 var app = builder.Build();
 

@@ -10,6 +10,7 @@ namespace Server.Common.Models
         public long UrbanId { get; set; }
         public long ModuleId { get; set; }
         public int NumberFloor { get; set; }
+        public string? BuildingName { get; set; }
         public string? BuildingAddress { get; set; }
 
         public Module Module { get; set; } = null!;

@@ -53,7 +53,7 @@ namespace Server.BusinessLogic.Services
                 {
                     Value = at,
                     RtId = refreshToken.Id,
-                    ExpirationDate = DateTime.Now.AddMinutes(10),
+                    ExpirationDate = DateTime.Now.AddDays(2),
                     Revoked = false,
                 };
                 await _tokenRepository.AddAccessTokenAsync(accessToken);

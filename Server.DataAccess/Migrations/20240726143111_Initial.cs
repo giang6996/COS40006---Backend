@@ -167,7 +167,10 @@ namespace Server.DataAccess.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AccountId = table.Column<long>(type: "bigint", nullable: false),
                     ModuleId = table.Column<long>(type: "bigint", nullable: false),
-                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    RoomNumber = table.Column<int>(type: "int", nullable: false),
+                    BuildingName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BuildingAddress = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -248,6 +251,7 @@ namespace Server.DataAccess.Migrations
                     UrbanId = table.Column<long>(type: "bigint", nullable: false),
                     ModuleId = table.Column<long>(type: "bigint", nullable: false),
                     NumberFloor = table.Column<int>(type: "int", nullable: false),
+                    BuildingName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BuildingAddress = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -343,7 +347,7 @@ namespace Server.DataAccess.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     BuildingId = table.Column<long>(type: "bigint", nullable: false),
                     Available = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ApartmentAddress = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    RoomNumber = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -364,7 +368,8 @@ namespace Server.DataAccess.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ApartmentId = table.Column<long>(type: "bigint", nullable: false),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Room = table.Column<int>(type: "int", nullable: false),
+                    NumBedroom = table.Column<int>(type: "int", nullable: false),
+                    NumBathroom = table.Column<int>(type: "int", nullable: false),
                     Size = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>

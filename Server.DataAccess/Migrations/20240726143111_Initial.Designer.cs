@@ -12,7 +12,7 @@ using Server.DataAccess;
 namespace Server.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240726090913_Initial")]
+    [Migration("20240726143111_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -146,14 +146,14 @@ namespace Server.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<string>("ApartmentAddress")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Available")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("BuildingId")
                         .HasColumnType("bigint");
+
+                    b.Property<int>("RoomNumber")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -173,7 +173,10 @@ namespace Server.DataAccess.Migrations
                     b.Property<long>("ApartmentId")
                         .HasColumnType("bigint");
 
-                    b.Property<int>("Room")
+                    b.Property<int>("NumBathroom")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NumBedroom")
                         .HasColumnType("int");
 
                     b.Property<double>("Size")
@@ -199,6 +202,9 @@ namespace Server.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
                     b.Property<string>("BuildingAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BuildingName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("ModuleId")
@@ -291,8 +297,17 @@ namespace Server.DataAccess.Migrations
                     b.Property<long>("AccountId")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("BuildingAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BuildingName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<long>("ModuleId")
                         .HasColumnType("bigint");
+
+                    b.Property<int>("RoomNumber")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");

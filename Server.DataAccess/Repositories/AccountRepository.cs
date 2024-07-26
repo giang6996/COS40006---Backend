@@ -40,10 +40,10 @@ namespace Server.DataAccess.Repositories
 
                 if (accountModule != null)
                 {
-                    if (!string.IsNullOrEmpty(accountModule.AccessLevel) && accountModule.AccessLevel.Contains(permissionName.ToString()))
-                    {
-                        return accountModule;
-                    }
+                    // if (!string.IsNullOrEmpty(accountModule.AccessLevel) && accountModule.AccessLevel.Contains(permissionName.ToString()))
+                    // {
+                    //     return accountModule;
+                    // }
                     return accountModule;
                 }
                 else if (accountModule == null)

@@ -11,6 +11,9 @@ namespace Server.Common.Models
         [Required]
         public required long ModuleId { get; set; }
         public DateTime Timestamp { get; set; }
+        public int RoomNumber { get; set; }
+        public string? BuildingName { get; set; }
+        public string? BuildingAddress { get; set; }
 
         public Account Account { get; set; } = null!;
         public Module Module { get; set; } = null!;

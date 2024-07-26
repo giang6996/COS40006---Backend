@@ -8,7 +8,7 @@ namespace Server.Common.Models
         public long Id { get; set; }
         public long BuildingId { get; set; }
         public string? Available { get; set; }
-        public string? ApartmentAddress { get; set; }
+        public int RoomNumber { get; set; }
 
         public Building Building { get; set; } = null!;
         public ApartmentDetail? ApartmentDetail { get; set; }

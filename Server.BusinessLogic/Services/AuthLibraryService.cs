@@ -44,7 +44,7 @@ namespace Server.BusinessLogic.Services
                 issuer: _configuration["JwtBearer:Issuer"],
                 audience: _configuration["JwtBearer:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(2),
+                expires: DateTime.Now.AddDays(2),
                 signingCredentials: creds);
 
             string at = new JwtSecurityTokenHandler().WriteToken(token);

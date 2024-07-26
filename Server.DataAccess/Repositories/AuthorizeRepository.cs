@@ -25,9 +25,7 @@ namespace Server.DataAccess.Repositories
         {
             try
             {
-                Role role = await GetRoleByName(roleName);
-
-                var roleFromDb = await (
+                var role = await (
                     from a in _db.Accounts
                     join ar in _db.AccountRoles on a.Id equals ar.AccountId
                     join r in _db.Roles on ar.RoleId equals r.Id
@@ -35,7 +33,7 @@ namespace Server.DataAccess.Repositories
                     select r
                 ).FirstOrDefaultAsync();
 
-                return roleFromDb ?? throw new Exception("Role of this account not found");
+                return role ?? throw new Exception("Role of this account not found");
             }
             catch (Exception ex)
             {
