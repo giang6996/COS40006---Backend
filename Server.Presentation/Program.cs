@@ -57,12 +57,16 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddScoped<IAuthLibrary, AuthLibrary>();
+builder.Services.AddScoped<IAuthLibraryService, AuthLibraryService>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IFileRepository, FileRepository>();
 builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<IPropertyDossierService, PropertyDossierService>();
+builder.Services.AddScoped<IPropertyDossierRepository, PropertyDossierRepository>();
+builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
+builder.Services.AddScoped<IAuthorizeRepository, AuthorizeRepository>();
 
 var app = builder.Build();
 

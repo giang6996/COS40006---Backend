@@ -11,13 +11,13 @@ using System.Text;
 
 namespace Server.BusinessLogic.Services
 {
-    public class AuthLibrary : IAuthLibrary
+    public class AuthLibraryService : IAuthLibraryService
     {
         private readonly IConfiguration _configuration;
         private readonly ITokenRepository _tokenRepository;
         private readonly IAccountRepository _accountRepository;
 
-        public AuthLibrary(IConfiguration configuration, ITokenRepository tokenRepository, IAccountRepository accountRepository)
+        public AuthLibraryService(IConfiguration configuration, ITokenRepository tokenRepository, IAccountRepository accountRepository)
         {
             _configuration = configuration;
             _tokenRepository = tokenRepository;
@@ -171,9 +171,14 @@ namespace Server.BusinessLogic.Services
             if (accessToken.IsNullOrEmpty())
                 throw new ArgumentException("Require access token");
 
-            Account? account = await _tokenRepository.FetchAccountFromDb(accessToken) ?? throw new Exception("Account not found from this access token");
-
-            return account;
+            try
+            {
+                return await _tokenRepository.FetchAccountFromDb(accessToken);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

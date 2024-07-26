@@ -4,7 +4,7 @@ using Server.Models.ResponseModels;
 
 namespace Server.BusinessLogic.Interfaces
 {
-    public interface IAuthLibrary
+    public interface IAuthLibraryService
     {
         public object Generate(Account account, bool includeRefreshToken = true);
         public ClaimsPrincipal? Validate(string accessToken, bool validateLifetimeParam = false);

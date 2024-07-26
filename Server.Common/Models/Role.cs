@@ -7,10 +7,9 @@ namespace Server.Common.Models
     {
         [Key]
         public long Id { get; set; }
-        public long AccountId { get; set; }
         public required string Name { get; set; }
 
-
-        public Account Account { get; set; } = null!;
+        public List<Account> Accounts { get; } = new();
+        public List<Permission> Permissions { get; } = new();
     }
 }

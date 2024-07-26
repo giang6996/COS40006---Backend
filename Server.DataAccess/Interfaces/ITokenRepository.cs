@@ -9,6 +9,6 @@ namespace Server.DataAccess.Interfaces
         Task<RefreshToken?> GetRefreshTokenAsync(string refreshTokenValue);
         Task<AccessToken?> GetAccessTokenAsync(string refreshTokenValue);
         Task RevokeAccessToken(AccessToken token);
-        Task<Account?> FetchAccountFromDb(string accessToken);
+        Task<Account> FetchAccountFromDb(string accessToken);
     }
 }

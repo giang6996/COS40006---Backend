@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using Server.BusinessLogic.Interfaces;
-using Server.Common.Models;
 using Server.Models.DTOs.PropertyDossier;
 
 namespace Server.Presentation.Controllers
@@ -12,13 +11,11 @@ namespace Server.Presentation.Controllers
     [Authorize]
     public class PropertyDossier : ControllerBase
     {
-        private readonly IFileService _fileService;
-        private readonly IAuthLibrary _authLibrary;
+        private readonly IPropertyDossierService _propertyDossier;
 
-        public PropertyDossier(IFileService fileService, IAuthLibrary authLibrary)
+        public PropertyDossier(IPropertyDossierService propertyDossier)
         {
-            _fileService = fileService;
-            _authLibrary = authLibrary;
+            _propertyDossier = propertyDossier;
         }
 
         [HttpPost("upload")]
@@ -30,9 +27,8 @@ namespace Server.Presentation.Controllers
                 if (authorizationHeader.ToString().StartsWith("Bearer"))
                 {
                     var accessToken = authorizationHeader.ToString().Substring("Bearer ".Length).Trim();
-                    Account account = await _authLibrary.FetchAccount(accessToken);
-                    await _fileService.UploadFileAsync(request.Files, account);
 
+                    await _propertyDossier.NewPropertyDossier(accessToken, request);
                     return Ok("Uploaded successfully");
                 }
 

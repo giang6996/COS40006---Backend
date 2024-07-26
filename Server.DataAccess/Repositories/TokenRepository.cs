@@ -41,15 +41,13 @@ namespace Server.DataAccess.Repositories
             await _db.SaveChangesAsync();
         }
 
-        public async Task<Account?> FetchAccountFromDb(string accessToken)
+        public async Task<Account> FetchAccountFromDb(string accessToken)
         {
-            var account = await (from at in _db.AccessTokens
-                                 join rt in _db.RefreshTokens on at.RtId equals rt.Id
-                                 join a in _db.Accounts on rt.AccountId equals a.Id
-                                 where at.Value == accessToken
-                                 select a).FirstOrDefaultAsync();
-
-            return account;
+            return await (from at in _db.AccessTokens
+                          join rt in _db.RefreshTokens on at.RtId equals rt.Id
+                          join a in _db.Accounts on rt.AccountId equals a.Id
+                          where at.Value == accessToken
+                          select a).FirstOrDefaultAsync() ?? throw new Exception("Account not found from this access token");
         }
     }
 }

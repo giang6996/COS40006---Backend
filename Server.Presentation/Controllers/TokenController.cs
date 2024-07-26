@@ -9,11 +9,11 @@ namespace Server.Presentation.Controllers
     [Authorize]
     public class TokenController : ControllerBase
     {
-        private readonly IAuthLibrary _authLibrary;
+        private readonly IAuthLibraryService _authLibraryService;
 
-        public TokenController(IAuthLibrary authLibrary)
+        public TokenController(IAuthLibraryService authLibraryService)
         {
-            _authLibrary = authLibrary;
+            _authLibraryService = authLibraryService;
         }
 
         [AllowAnonymous]
@@ -37,7 +37,7 @@ namespace Server.Presentation.Controllers
 
             try
             {
-                var token = await _authLibrary.GenerateNewToken(accessToken, refreshToken);
+                var token = await _authLibraryService.GenerateNewToken(accessToken, refreshToken);
 
                 Response.Cookies.Append("refreshToken", token.RefreshToken, new CookieOptions
                 {

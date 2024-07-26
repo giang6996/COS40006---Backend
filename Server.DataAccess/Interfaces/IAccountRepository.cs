@@ -7,5 +7,6 @@ namespace Server.DataAccess.Interfaces
         bool CheckAccountExist(string email);
         Task AddAccountAsync(Account account);
         Task<Account?> GetAccountByEmailAsync(string email);
+        Task<AccountModule> CheckAccountModule(Module module, Account account, Server.Common.Enums.Role roleName, Server.Common.Enums.Permission permissionName);
     }
 }

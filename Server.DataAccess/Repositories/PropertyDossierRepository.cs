@@ -3,18 +3,18 @@ using Server.DataAccess.Interfaces;
 
 namespace Server.DataAccess.Repositories
 {
-    public class PropertyDossier : IPropertyDossierRepository
+    public class PropertyDossierRepository : IPropertyDossierRepository
     {
         private readonly AppDbContext _db;
 
-        public PropertyDossier(AppDbContext db)
+        public PropertyDossierRepository(AppDbContext db)
         {
             _db = db;
         }
 
-        // public async Task<Document> CreateNewDoc()
-        // {
-
-        // }
+        public async Task<Document> CreateNewDoc()
+        {
+            throw new Exception("");
+        }
     }
 }

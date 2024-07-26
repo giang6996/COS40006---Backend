@@ -18,15 +18,42 @@ namespace Server.DataAccess
         public DbSet<Apartment> Apartments { get; set; }
         public DbSet<ApartmentDetail> ApartmentDetails { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<Permission> Permissions { get; set; }
+        public DbSet<RolePermission> RolePermissions { get; set; }
+        public DbSet<AccountRole> AccountRoles { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<AccessToken> AccessTokens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Account>()
+                .HasMany(a => a.Roles)
+                .WithMany(r => r.Accounts)
+                .UsingEntity<AccountRole>();
+
+            modelBuilder.Entity<Role>()
+                .HasMany(r => r.Permissions)
+                .WithMany(p => p.Roles)
+                .UsingEntity<RolePermission>();
+
+            modelBuilder.Entity<Account>()
                 .HasMany(a => a.Modules)
                 .WithMany(m => m.Accounts)
                 .UsingEntity<AccountModule>();
+
+            modelBuilder.Entity<Account>()
+                .HasMany(a => a.Documents)
+                .WithOne(d => d.Account)
+                .HasForeignKey(d => d.AccountId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Account>()
+                .HasMany(a => a.Complaints)
+                .WithOne(c => c.Account)
+                .HasForeignKey(c => c.AccountId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Account>()
                 .HasOne(a => a.Resident)
@@ -118,15 +145,6 @@ namespace Server.DataAccess
                 .HasForeignKey(a => a.RtId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
-
-            // Fix later
-            modelBuilder.Entity<Account>()
-                .HasOne(a => a.Role)
-                .WithOne(r => r.Account)
-                .HasForeignKey<Role>(r => r.AccountId)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.Restrict);
-            // Fix later
         }
 
     }

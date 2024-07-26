@@ -8,13 +8,13 @@ namespace Server.BusinessLogic.Services
 {
     public class AccountService : IAccountService
     {
-        private readonly IAuthLibrary _authLibrary;
+        private readonly IAuthLibraryService _authLibraryService;
         private readonly IAccountRepository _accountRepository;
         private readonly ITokenRepository _tokenRepository;
 
-        public AccountService(IAuthLibrary authLibrary, IAccountRepository accountRepository, ITokenRepository tokenRepository)
+        public AccountService(IAuthLibraryService authLibraryService, IAccountRepository accountRepository, ITokenRepository tokenRepository)
         {
-            _authLibrary = authLibrary;
+            _authLibraryService = authLibraryService;
             _accountRepository = accountRepository;
             _tokenRepository = tokenRepository;
         }
@@ -37,7 +37,7 @@ namespace Server.BusinessLogic.Services
 
             await _accountRepository.AddAccountAsync(account);
 
-            var token = _authLibrary.Generate(account);
+            var token = _authLibraryService.Generate(account);
             if (token is (string at, string rt))
             {
                 RefreshToken refreshToken = new()
@@ -77,7 +77,7 @@ namespace Server.BusinessLogic.Services
             if (!BCrypt.Net.BCrypt.Verify(request.Password, account.Password))
                 throw new Exception("Incorrect Password");
 
-            var token = _authLibrary.Generate(account);
+            var token = _authLibraryService.Generate(account);
             if (token is (string at, string rt))
             {
                 RefreshToken refreshToken = new()
