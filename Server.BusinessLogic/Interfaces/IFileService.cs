@@ -5,6 +5,6 @@ namespace Server.BusinessLogic.Interfaces
 {
     public interface IFileService
     {
-        Task<bool> UploadFileAsync(List<IFormFile> files, Account account);
+        Task<bool> UploadFileAsync(List<IFormFile> files, Account account, Document document);
     }
 }

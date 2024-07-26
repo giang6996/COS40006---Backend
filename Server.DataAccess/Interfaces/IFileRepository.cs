@@ -5,6 +5,6 @@ namespace Server.DataAccess.Interfaces
 {
     public interface IFileRepository
     {
-        Task<bool> SaveFilesAsync(List<IFormFile> file, Account account);
+        Task<bool> SaveFilesAsync(List<IFormFile> file, Account account, Document document);
     }
 }

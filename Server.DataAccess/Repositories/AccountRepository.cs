@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Server.Common.Models;
 using Server.DataAccess.Interfaces;
 
@@ -37,7 +38,15 @@ namespace Server.DataAccess.Repositories
             {
                 AccountModule? accountModule = await _db.AccountModules.Where(am => am.AccountId == account.Id && am.ModuleId == module.Id).FirstOrDefaultAsync();
 
-                if (accountModule == null)
+                if (accountModule != null)
+                {
+                    if (!string.IsNullOrEmpty(accountModule.AccessLevel) && accountModule.AccessLevel.Contains(permissionName.ToString()))
+                    {
+                        return accountModule;
+                    }
+                    return accountModule;
+                }
+                else if (accountModule == null)
                 {
                     if (await _authorizeRepository.VerifyModulePermission(account, roleName, permissionName))
                     {
@@ -53,7 +62,7 @@ namespace Server.DataAccess.Repositories
                     }
                 }
 
-                throw new Exception("Can not access");
+                throw new Exception("Can not access this module");
             }
             catch (Exception ex)
             {

@@ -12,9 +12,19 @@ namespace Server.DataAccess.Repositories
             _db = db;
         }
 
-        public async Task<Document> CreateNewDoc()
+        public async Task<Document> CreateNewDoc(Module module, Account account)
         {
-            throw new Exception("");
+            Document document = new()
+            {
+                AccountId = account.Id,
+                ModuleId = module.Id,
+                Timestamp = DateTime.Now
+            };
+
+            await _db.Documents.AddAsync(document);
+            await _db.SaveChangesAsync();
+
+            return document;
         }
     }
 }
