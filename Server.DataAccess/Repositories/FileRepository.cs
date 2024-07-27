@@ -56,7 +56,7 @@ namespace Server.DataAccess.Repositories
                         DocumentId = document.Id,
                         Name = $"Document {docCount}",
                         Status = DocumentStatus.Pending.ToString(),
-                        DocumentLink = newFilePath
+                        DocumentLink = Path.Combine(account.Email, newFileName)
                     };
                     documentDetailsList.Add(dt);
                 }

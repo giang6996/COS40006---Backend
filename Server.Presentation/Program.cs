@@ -1,4 +1,5 @@
 using System.Text;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -52,6 +53,12 @@ builder.Services.AddCors(options =>
             );
     });
 
+// builder.Services.AddControllers().AddJsonOptions(options =>
+// {
+//     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+//     options.JsonSerializerOptions.WriteIndented = true;
+// });
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -69,6 +76,7 @@ builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
 builder.Services.AddScoped<IAuthorizeRepository, AuthorizeRepository>();
 builder.Services.AddScoped<IResidentService, ResidentService>();
 builder.Services.AddScoped<IResidentRepository, ResidentRepository>();
+builder.Services.AddScoped<IDocRepository, DocRepository>();
 
 var app = builder.Build();
 
