@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http.HttpResults;
 using Server.BusinessLogic.Interfaces;
 using Server.Common.Models;
 using Server.DataAccess.Interfaces;
@@ -80,6 +81,7 @@ namespace Server.BusinessLogic.Services
 
                     DetailsNewResidentResponse detailsNewResidentResponse = new()
                     {
+                        AccountId = newAccount.Id,
                         FirstName = newAccount.FirstName,
                         LastName = newAccount.LastName,
                         Email = newAccount.Email,
@@ -93,6 +95,38 @@ namespace Server.BusinessLogic.Services
                     };
 
                     return detailsNewResidentResponse;
+                }
+
+                throw new Exception("No permission");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
+
+        public async Task UpdateAccountStatus(string accessToken, long accountId, string status)
+        {
+            try
+            {
+                Account account = await _authLibraryService.FetchAccount(accessToken);
+                if (await _authorizeRepository.VerifyModulePermission(account, Common.Enums.Role.Admin, Common.Enums.Permission.UpdateNewResidentRequest))
+                {
+                    Account residentAccount = await _accountRepository.GetAccountByAccountIdAsync(accountId);
+                    Document document = await _docRepository.GetDocumentByAccountId(accountId);
+                    if (document != null && residentAccount != null)
+                    {
+                        // Try to parse the status
+                        if (Enum.TryParse<Common.Enums.AccountStatus>(status, true, out var parsedStatus))
+                        {
+                            await _accountRepository.UpdateAccountStatus(residentAccount, parsedStatus);
+                            return;
+                        }
+                        else
+                        {
+                            throw new ArgumentException("Invalid account status");
+                        }
+                    }
                 }
 
                 throw new Exception("No permission");

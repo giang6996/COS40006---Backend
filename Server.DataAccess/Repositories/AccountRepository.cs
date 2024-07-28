@@ -69,5 +69,16 @@ namespace Server.DataAccess.Repositories
                 throw new Exception(ex.Message);
             }
         }
+
+        public async Task<Account> GetAccountByAccountIdAsync(long accountId)
+        {
+            return await _db.Accounts.Where(a => a.Id == accountId).FirstOrDefaultAsync() ?? throw new Exception("Account not found");
+        }
+
+        public async Task UpdateAccountStatus(Account account, Common.Enums.AccountStatus accountStatus)
+        {
+            account.Status = accountStatus.ToString();
+            await _db.SaveChangesAsync();
+        }
     }
 }

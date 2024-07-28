@@ -22,5 +22,10 @@ namespace Server.DataAccess.Repositories
         {
             return await _db.Documents.Where(d => d.AccountId == account.Id).OrderByDescending(d => d.Timestamp).FirstOrDefaultAsync() ?? throw new Exception("Document not found");
         }
+
+        public async Task<Document> GetDocumentByAccountId(long accountId)
+        {
+            return await _db.Documents.Where(d => d.AccountId == accountId).FirstOrDefaultAsync() ?? throw new Exception("Document not found");
+        }
     }
 }

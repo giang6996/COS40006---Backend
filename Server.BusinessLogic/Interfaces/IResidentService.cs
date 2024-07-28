@@ -7,5 +7,6 @@ namespace Server.BusinessLogic.Interfaces
     {
         Task<List<NewResidentResponse>> GetAllNewResidentRequest(string accessToken);
         Task<DetailsNewResidentResponse> GetDetailsNewResident(string accessToken, string residentEmail);
+        Task UpdateAccountStatus(string accessToken, long accountId, string Status);
     }
 }

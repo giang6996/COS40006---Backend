@@ -6,5 +6,6 @@ namespace Server.DataAccess.Interfaces
     {
         Task<Document> GetLastDoc(Account account);
         Task<List<DocumentDetail>> GetDocDetails(Document document);
+        Task<Document> GetDocumentByAccountId(long accountId);
     }
 }
