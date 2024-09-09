@@ -7,10 +7,10 @@ namespace Server.Common.Enums
         UpdatePropertyDossier,
         DeletePropertyDossier,
 
-        CreateComplain,
-        ReadComplain,
-        UpdateComplain,
-        DeleteComplain,
+        CreateForm,
+        ReadForm,
+        UpdateForm,
+        DeleteForm,
 
         ReadAllNewResidentRequest,
         UpdateNewResidentRequest,
@@ -21,6 +21,5 @@ namespace Server.Common.Enums
         DeleteAccount,
 
         AssignRole,
-        RemoveRole
     }
 }

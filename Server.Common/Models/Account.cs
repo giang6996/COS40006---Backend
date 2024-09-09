@@ -18,7 +18,7 @@ namespace Server.Common.Models
 
         public List<Module> Modules { get; } = new();
         public List<Document> Documents { get; } = new();
-        public List<Complaint> Complaints { get; } = new();
+        public List<FormResidentRequest> FormResidentRequests { get; } = new();
         public Resident? Resident { get; set; }
         public List<Role> Roles { get; } = new();
         public List<RefreshToken> RefreshTokens { get; } = new();

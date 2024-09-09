@@ -8,7 +8,7 @@ using Server.Models.DTOs.Resident;
 namespace Server.Presentation.Controllers
 {
     [ApiController]
-    [Route("api/resident")]
+    [Route("api/[controller]")]
     [Authorize]
     public class ResidentController : ControllerBase
     {
@@ -27,7 +27,7 @@ namespace Server.Presentation.Controllers
                 var authorizationHeader = Request.Headers[HeaderNames.Authorization];
                 if (authorizationHeader.ToString().StartsWith("Bearer"))
                 {
-                    var accessToken = authorizationHeader.ToString().Substring("Bearer ".Length).Trim();
+                    var accessToken = authorizationHeader.ToString()["Bearer ".Length..].Trim();
                     List<NewResidentResponse> newResidentResponsesList = await _residentService.GetAllNewResidentRequest(accessToken);
                     return Ok(newResidentResponsesList);
                 }
@@ -48,7 +48,7 @@ namespace Server.Presentation.Controllers
                 var authorizationHeader = Request.Headers[HeaderNames.Authorization];
                 if (authorizationHeader.ToString().StartsWith("Bearer"))
                 {
-                    var accessToken = authorizationHeader.ToString().Substring("Bearer ".Length).Trim();
+                    var accessToken = authorizationHeader.ToString()["Bearer ".Length..].Trim();
                     DetailsNewResidentResponse response = await _residentService.GetDetailsNewResident(accessToken, email);
 
                     return Ok(response);
@@ -70,7 +70,7 @@ namespace Server.Presentation.Controllers
                 var authorizationHeader = Request.Headers[HeaderNames.Authorization];
                 if (authorizationHeader.ToString().StartsWith("Bearer"))
                 {
-                    var accessToken = authorizationHeader.ToString().Substring("Bearer ".Length).Trim();
+                    var accessToken = authorizationHeader.ToString()["Bearer ".Length..].Trim();
                     await _residentService.UpdateAccountStatus(accessToken, request.AccountId, request.Status);
 
                     return Ok("Account Status update successfully");

@@ -12,8 +12,9 @@ namespace Server.Common.Models
 
         public List<Account> Accounts { get; } = new();
         public List<Document> Documents { get; } = new();
-        public List<Complaint> Complaints { get; } = new();
+        public List<FormResidentRequest> FormResidentRequests { get; } = new();
         public List<Building> Buildings { get; } = new();
         public List<Resident> Residents { get; } = new();
+        public List<Permission> Permissions { get; } = new();
     }
 }

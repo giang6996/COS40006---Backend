@@ -3,6 +3,7 @@ using Server.Common.Models;
 using Server.DataAccess.Interfaces;
 using Server.Models.ResponseModels;
 using Server.Models.DTOs.Account;
+using Server.Common.Enums;
 
 namespace Server.BusinessLogic.Services
 {
@@ -11,12 +12,14 @@ namespace Server.BusinessLogic.Services
         private readonly IAuthLibraryService _authLibraryService;
         private readonly IAccountRepository _accountRepository;
         private readonly ITokenRepository _tokenRepository;
+        private readonly IAuthorizeRepository _authorizeRepository;
 
-        public AccountService(IAuthLibraryService authLibraryService, IAccountRepository accountRepository, ITokenRepository tokenRepository)
+        public AccountService(IAuthLibraryService authLibraryService, IAccountRepository accountRepository, ITokenRepository tokenRepository, IAuthorizeRepository authorizeRepository)
         {
             _authLibraryService = authLibraryService;
             _accountRepository = accountRepository;
             _tokenRepository = tokenRepository;
+            _authorizeRepository = authorizeRepository;
         }
 
         public async Task<Token> RegisterAsync(RegisterRequest request)
@@ -26,16 +29,20 @@ namespace Server.BusinessLogic.Services
 
             string passwordHashed = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
+            long accountCount = _accountRepository.CountAccount();
+
             Account account = new()
             {
-                TenantId = 0,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 Password = passwordHashed,
                 Email = request.Email,
+                PhoneNumber = request.PhoneNumber,
+                Status = accountCount == 0 ? AccountStatus.Active.ToString() : AccountStatus.Pending.ToString()
             };
 
             await _accountRepository.AddAccountAsync(account);
+            await _authorizeRepository.AssignAccountRole(account, accountCount == 0 ? Server.Common.Enums.Role.Admin : Common.Enums.Role.User);
 
             var token = _authLibraryService.Generate(account);
             if (token is (string at, string rt))

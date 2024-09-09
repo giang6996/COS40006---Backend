@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Server.Common.Models
 {
-    public class Complaint
+    public class FormResidentRequest
     {
         [Key]
         public long Id { get; set; }
@@ -14,6 +14,6 @@ namespace Server.Common.Models
 
         public Account Account { get; set; } = null!;
         public Module Module { get; set; } = null!;
-        public List<ComplaintDetail> ComplaintDetails { get; } = new();
+        public List<FormResidentRequestDetail> FormResidentRequestDetails { get; } = new();
     }
 }

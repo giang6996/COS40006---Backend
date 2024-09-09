@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using Server.BusinessLogic.Interfaces;
 using Server.Common.Models;
 using Server.DataAccess.Interfaces;
@@ -22,15 +23,15 @@ namespace Server.BusinessLogic.Services
             _propertyDossierRepository = propertyDossierRepository;
         }
 
-        public async Task NewPropertyDossier(string accessToken, PropertyDossierRequest propertyDossier)
+        public async Task NewPropertyDossier(string accessToken, List<IFormFile> files, ApartmentInfoRequest apartmentInfo)
         {
             try
             {
                 Account account = await _authLibraryService.FetchAccount(accessToken);
                 Module module = await _moduleRepository.GetModuleByModuleName(Common.Enums.Module.PropertyDossier);
-                AccountModule accountModule = await _accountRepository.CheckAccountModule(module, account, Common.Enums.Role.User, Common.Enums.Permission.CreatePropertyDossier);
-                Document document = await _propertyDossierRepository.CreateNewDoc(module, account);
-                await _fileService.UploadFileAsync(propertyDossier.Files, account, document);
+                await _accountRepository.CheckAccountModule(module, account, Common.Enums.Role.User, Common.Enums.Permission.CreatePropertyDossier);
+                Document document = await _propertyDossierRepository.CreateNewDoc(module, account, apartmentInfo.RoomNumber, apartmentInfo.BuildingName, apartmentInfo.BuildingAddress);
+                await _fileService.UploadFileAsync(files, account, document);
             }
             catch (Exception ex)
             {

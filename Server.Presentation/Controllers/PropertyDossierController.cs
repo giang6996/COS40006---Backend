@@ -11,24 +11,24 @@ namespace Server.Presentation.Controllers
     [Authorize]
     public class PropertyDossier : ControllerBase
     {
-        private readonly IPropertyDossierService _propertyDossier;
+        private readonly IPropertyDossierService _propertyDossierService;
 
-        public PropertyDossier(IPropertyDossierService propertyDossier)
+        public PropertyDossier(IPropertyDossierService propertyDossierService)
         {
-            _propertyDossier = propertyDossier;
+            _propertyDossierService = propertyDossierService;
         }
 
         [HttpPost("upload")]
-        public async Task<IActionResult> UploadPropertyDossier([FromForm] PropertyDossierRequest request)
+        public async Task<IActionResult> UploadPropertyDossier([FromForm] List<IFormFile> files, [FromForm] ApartmentInfoRequest apartmentInfo)
         {
             try
             {
                 var authorizationHeader = Request.Headers[HeaderNames.Authorization];
                 if (authorizationHeader.ToString().StartsWith("Bearer"))
                 {
-                    var accessToken = authorizationHeader.ToString().Substring("Bearer ".Length).Trim();
+                    var accessToken = authorizationHeader.ToString()["Bearer ".Length..].Trim();
 
-                    await _propertyDossier.NewPropertyDossier(accessToken, request);
+                    await _propertyDossierService.NewPropertyDossier(accessToken, files, apartmentInfo);
                     return Ok("Uploaded successfully");
                 }
 

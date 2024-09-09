@@ -9,5 +9,6 @@ namespace Server.Common.Models
         public required string PermissionName { get; set; }
 
         public List<Role> Roles { get; } = new();
+        public List<Module> Modules { get; } = new();
     }
 }
