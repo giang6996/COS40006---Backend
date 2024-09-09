@@ -16,6 +16,20 @@ namespace Server.DataAccess.Repositories
             _db = db;
         }
 
+        public async Task AssignAccountRole(Account account, Common.Enums.Role roleName)
+        {
+            Role role = await GetRoleByName(roleName);
+
+            AccountRole accountRole = new()
+            {
+                AccountId = account.Id,
+                RoleId = role.Id
+            };
+
+            _db.AccountRoles.Add(accountRole);
+            await _db.SaveChangesAsync();
+        }
+
         public async Task<Role> GetRoleByName(Common.Enums.Role roleName)
         {
             return await _db.Roles.Where(r => r.Name == roleName.ToString()).FirstOrDefaultAsync() ?? throw new Exception("Role not found");

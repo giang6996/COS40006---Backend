@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace Server.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class Initial : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -112,8 +114,7 @@ namespace Server.DataAccess.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AccountId = table.Column<long>(type: "bigint", nullable: false),
-                    ModuleId = table.Column<long>(type: "bigint", nullable: false),
-                    AccessLevel = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    ModuleId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -130,33 +131,6 @@ namespace Server.DataAccess.Migrations
                         principalTable: "Modules",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Complaint",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AccountId = table.Column<long>(type: "bigint", nullable: false),
-                    ModuleId = table.Column<long>(type: "bigint", nullable: false),
-                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Complaint", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Complaint_Accounts_AccountId",
-                        column: x => x.AccountId,
-                        principalTable: "Accounts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Complaint_Modules_ModuleId",
-                        column: x => x.ModuleId,
-                        principalTable: "Modules",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -187,6 +161,59 @@ namespace Server.DataAccess.Migrations
                         principalTable: "Modules",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FormResidentRequest",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AccountId = table.Column<long>(type: "bigint", nullable: false),
+                    ModuleId = table.Column<long>(type: "bigint", nullable: false),
+                    Timestamp = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FormResidentRequest", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_FormResidentRequest_Accounts_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Accounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_FormResidentRequest_Modules_ModuleId",
+                        column: x => x.ModuleId,
+                        principalTable: "Modules",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ModulePermissions",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    ModuleId = table.Column<long>(type: "bigint", nullable: false),
+                    PermissionId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ModulePermissions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ModulePermissions_Modules_ModuleId",
+                        column: x => x.ModuleId,
+                        principalTable: "Modules",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ModulePermissions_Permissions_PermissionId",
+                        column: x => x.PermissionId,
+                        principalTable: "Permissions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -294,29 +321,6 @@ namespace Server.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ComplaintDetail",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ComplaintId = table.Column<long>(type: "bigint", nullable: false),
-                    ComplaintDesc = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ComplaintMediaLink = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Response = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ComplaintDetail", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_ComplaintDetail_Complaint_ComplaintId",
-                        column: x => x.ComplaintId,
-                        principalTable: "Complaint",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "DocumentDetails",
                 columns: table => new
                 {
@@ -335,6 +339,31 @@ namespace Server.DataAccess.Migrations
                         name: "FK_DocumentDetails_Documents_DocumentId",
                         column: x => x.DocumentId,
                         principalTable: "Documents",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "FormResidentRequestDetail",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FormResidentRequestId = table.Column<long>(type: "bigint", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TYpe = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    RequestMediaLink = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Response = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FormResidentRequestDetail", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_FormResidentRequestDetail_FormResidentRequest_FormResidentRequestId",
+                        column: x => x.FormResidentRequestId,
+                        principalTable: "FormResidentRequest",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -416,6 +445,62 @@ namespace Server.DataAccess.Migrations
                         onDelete: ReferentialAction.Restrict);
                 });
 
+            migrationBuilder.InsertData(
+                table: "Modules",
+                columns: new[] { "Id", "ModuleDesc", "ModuleName" },
+                values: new object[,]
+                {
+                    { 1L, null, "PropertyDossier" },
+                    { 2L, null, "Form" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Permissions",
+                columns: new[] { "Id", "PermissionName" },
+                values: new object[,]
+                {
+                    { 1L, "CreateAccount" },
+                    { 2L, "ReadAccount" },
+                    { 3L, "UpdateAccount" },
+                    { 4L, "DeleteAccount" },
+                    { 5L, "CreatePropertyDossier" },
+                    { 6L, "ReadPropertyDossier" },
+                    { 7L, "UpdatePropertyDossier" },
+                    { 8L, "DeletePropertyDossier" },
+                    { 9L, "CreateForm" },
+                    { 10L, "ReadForm" },
+                    { 11L, "UpdateForm" },
+                    { 12L, "DeleteForm" },
+                    { 13L, "ReadAllNewResidentRequest" },
+                    { 14L, "UpdateNewResidentRequest" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Roles",
+                columns: new[] { "Id", "Name" },
+                values: new object[,]
+                {
+                    { 1L, "Admin" },
+                    { 2L, "User" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "RolePermissions",
+                columns: new[] { "Id", "PermissionId", "RoleId" },
+                values: new object[,]
+                {
+                    { 3L, 13L, 1L },
+                    { 4L, 14L, 1L },
+                    { 5L, 5L, 2L },
+                    { 6L, 6L, 2L },
+                    { 7L, 7L, 2L },
+                    { 8L, 8L, 2L },
+                    { 9L, 9L, 2L },
+                    { 10L, 10L, 2L },
+                    { 11L, 11L, 2L },
+                    { 12L, 12L, 2L }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AccessTokens_RtId",
                 table: "AccessTokens",
@@ -463,21 +548,6 @@ namespace Server.DataAccess.Migrations
                 column: "UrbanId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Complaint_AccountId",
-                table: "Complaint",
-                column: "AccountId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Complaint_ModuleId",
-                table: "Complaint",
-                column: "ModuleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ComplaintDetail_ComplaintId",
-                table: "ComplaintDetail",
-                column: "ComplaintId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_DocumentDetails_DocumentId",
                 table: "DocumentDetails",
                 column: "DocumentId");
@@ -491,6 +561,31 @@ namespace Server.DataAccess.Migrations
                 name: "IX_Documents_ModuleId",
                 table: "Documents",
                 column: "ModuleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FormResidentRequest_AccountId",
+                table: "FormResidentRequest",
+                column: "AccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FormResidentRequest_ModuleId",
+                table: "FormResidentRequest",
+                column: "ModuleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FormResidentRequestDetail_FormResidentRequestId",
+                table: "FormResidentRequestDetail",
+                column: "FormResidentRequestId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ModulePermissions_ModuleId",
+                table: "ModulePermissions",
+                column: "ModuleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ModulePermissions_PermissionId",
+                table: "ModulePermissions",
+                column: "PermissionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RefreshTokens_AccountId",
@@ -540,10 +635,13 @@ namespace Server.DataAccess.Migrations
                 name: "ApartmentDetails");
 
             migrationBuilder.DropTable(
-                name: "ComplaintDetail");
+                name: "DocumentDetails");
 
             migrationBuilder.DropTable(
-                name: "DocumentDetails");
+                name: "FormResidentRequestDetail");
+
+            migrationBuilder.DropTable(
+                name: "ModulePermissions");
 
             migrationBuilder.DropTable(
                 name: "Residents");
@@ -555,10 +653,10 @@ namespace Server.DataAccess.Migrations
                 name: "RefreshTokens");
 
             migrationBuilder.DropTable(
-                name: "Complaint");
+                name: "Documents");
 
             migrationBuilder.DropTable(
-                name: "Documents");
+                name: "FormResidentRequest");
 
             migrationBuilder.DropTable(
                 name: "Apartments");

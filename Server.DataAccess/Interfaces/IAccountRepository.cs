@@ -4,6 +4,7 @@ namespace Server.DataAccess.Interfaces
 {
     public interface IAccountRepository
     {
+        long CountAccount();
         bool CheckAccountExist(string email);
         Task AddAccountAsync(Account account);
         Task<Account?> GetAccountByEmailAsync(string email);

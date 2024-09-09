@@ -12,8 +12,8 @@ using Server.DataAccess;
 namespace Server.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240726143111_Initial")]
-    partial class Initial
+    [Migration("20240909144110_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -96,9 +96,6 @@ namespace Server.DataAccess.Migrations
                         .HasColumnType("bigint");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("AccessLevel")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<long>("AccountId")
                         .HasColumnType("bigint");
@@ -228,64 +225,6 @@ namespace Server.DataAccess.Migrations
                     b.ToTable("Buildings");
                 });
 
-            modelBuilder.Entity("Server.Common.Models.Complaint", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<long>("AccountId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("ModuleId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("Timestamp")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AccountId");
-
-                    b.HasIndex("ModuleId");
-
-                    b.ToTable("Complaint");
-                });
-
-            modelBuilder.Entity("Server.Common.Models.ComplaintDetail", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("ComplaintDesc")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("ComplaintId")
-                        .HasColumnType("bigint");
-
-                    b.Property<string>("ComplaintMediaLink")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Response")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ComplaintId");
-
-                    b.ToTable("ComplaintDetail");
-                });
-
             modelBuilder.Entity("Server.Common.Models.Document", b =>
                 {
                     b.Property<long>("Id")
@@ -353,6 +292,72 @@ namespace Server.DataAccess.Migrations
                     b.ToTable("DocumentDetails");
                 });
 
+            modelBuilder.Entity("Server.Common.Models.FormResidentRequest", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("AccountId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("ModuleId")
+                        .HasColumnType("bigint");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("ModuleId");
+
+                    b.ToTable("FormResidentRequest");
+                });
+
+            modelBuilder.Entity("Server.Common.Models.FormResidentRequestDetail", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("FormResidentRequestId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("RequestMediaLink")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Response")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TYpe")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FormResidentRequestId");
+
+                    b.ToTable("FormResidentRequestDetail");
+                });
+
             modelBuilder.Entity("Server.Common.Models.Module", b =>
                 {
                     b.Property<long>("Id")
@@ -371,6 +376,41 @@ namespace Server.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Modules");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            ModuleName = "PropertyDossier"
+                        },
+                        new
+                        {
+                            Id = 2L,
+                            ModuleName = "Form"
+                        });
+                });
+
+            modelBuilder.Entity("Server.Common.Models.ModulePermission", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("ModuleId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("PermissionId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ModuleId");
+
+                    b.HasIndex("PermissionId");
+
+                    b.ToTable("ModulePermissions");
                 });
 
             modelBuilder.Entity("Server.Common.Models.Permission", b =>
@@ -388,6 +428,78 @@ namespace Server.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Permissions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            PermissionName = "CreateAccount"
+                        },
+                        new
+                        {
+                            Id = 2L,
+                            PermissionName = "ReadAccount"
+                        },
+                        new
+                        {
+                            Id = 3L,
+                            PermissionName = "UpdateAccount"
+                        },
+                        new
+                        {
+                            Id = 4L,
+                            PermissionName = "DeleteAccount"
+                        },
+                        new
+                        {
+                            Id = 5L,
+                            PermissionName = "CreatePropertyDossier"
+                        },
+                        new
+                        {
+                            Id = 6L,
+                            PermissionName = "ReadPropertyDossier"
+                        },
+                        new
+                        {
+                            Id = 7L,
+                            PermissionName = "UpdatePropertyDossier"
+                        },
+                        new
+                        {
+                            Id = 8L,
+                            PermissionName = "DeletePropertyDossier"
+                        },
+                        new
+                        {
+                            Id = 9L,
+                            PermissionName = "CreateForm"
+                        },
+                        new
+                        {
+                            Id = 10L,
+                            PermissionName = "ReadForm"
+                        },
+                        new
+                        {
+                            Id = 11L,
+                            PermissionName = "UpdateForm"
+                        },
+                        new
+                        {
+                            Id = 12L,
+                            PermissionName = "DeleteForm"
+                        },
+                        new
+                        {
+                            Id = 13L,
+                            PermissionName = "ReadAllNewResidentRequest"
+                        },
+                        new
+                        {
+                            Id = 14L,
+                            PermissionName = "UpdateNewResidentRequest"
+                        });
                 });
 
             modelBuilder.Entity("Server.Common.Models.RefreshToken", b =>
@@ -462,6 +574,18 @@ namespace Server.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            Name = "Admin"
+                        },
+                        new
+                        {
+                            Id = 2L,
+                            Name = "User"
+                        });
                 });
 
             modelBuilder.Entity("Server.Common.Models.RolePermission", b =>
@@ -485,6 +609,68 @@ namespace Server.DataAccess.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("RolePermissions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 3L,
+                            PermissionId = 13L,
+                            RoleId = 1L
+                        },
+                        new
+                        {
+                            Id = 4L,
+                            PermissionId = 14L,
+                            RoleId = 1L
+                        },
+                        new
+                        {
+                            Id = 5L,
+                            PermissionId = 5L,
+                            RoleId = 2L
+                        },
+                        new
+                        {
+                            Id = 6L,
+                            PermissionId = 6L,
+                            RoleId = 2L
+                        },
+                        new
+                        {
+                            Id = 7L,
+                            PermissionId = 7L,
+                            RoleId = 2L
+                        },
+                        new
+                        {
+                            Id = 8L,
+                            PermissionId = 8L,
+                            RoleId = 2L
+                        },
+                        new
+                        {
+                            Id = 9L,
+                            PermissionId = 9L,
+                            RoleId = 2L
+                        },
+                        new
+                        {
+                            Id = 10L,
+                            PermissionId = 10L,
+                            RoleId = 2L
+                        },
+                        new
+                        {
+                            Id = 11L,
+                            PermissionId = 11L,
+                            RoleId = 2L
+                        },
+                        new
+                        {
+                            Id = 12L,
+                            PermissionId = 12L,
+                            RoleId = 2L
+                        });
                 });
 
             modelBuilder.Entity("Server.Common.Models.Urban", b =>
@@ -585,36 +771,6 @@ namespace Server.DataAccess.Migrations
                     b.Navigation("Urban");
                 });
 
-            modelBuilder.Entity("Server.Common.Models.Complaint", b =>
-                {
-                    b.HasOne("Server.Common.Models.Account", "Account")
-                        .WithMany("Complaints")
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("Server.Common.Models.Module", "Module")
-                        .WithMany("Complaints")
-                        .HasForeignKey("ModuleId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Account");
-
-                    b.Navigation("Module");
-                });
-
-            modelBuilder.Entity("Server.Common.Models.ComplaintDetail", b =>
-                {
-                    b.HasOne("Server.Common.Models.Complaint", "Complaint")
-                        .WithMany("ComplaintDetails")
-                        .HasForeignKey("ComplaintId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Complaint");
-                });
-
             modelBuilder.Entity("Server.Common.Models.Document", b =>
                 {
                     b.HasOne("Server.Common.Models.Account", "Account")
@@ -643,6 +799,51 @@ namespace Server.DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("Document");
+                });
+
+            modelBuilder.Entity("Server.Common.Models.FormResidentRequest", b =>
+                {
+                    b.HasOne("Server.Common.Models.Account", "Account")
+                        .WithMany("FormResidentRequests")
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Server.Common.Models.Module", "Module")
+                        .WithMany("FormResidentRequests")
+                        .HasForeignKey("ModuleId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+
+                    b.Navigation("Module");
+                });
+
+            modelBuilder.Entity("Server.Common.Models.FormResidentRequestDetail", b =>
+                {
+                    b.HasOne("Server.Common.Models.FormResidentRequest", "FormResidentRequest")
+                        .WithMany("FormResidentRequestDetails")
+                        .HasForeignKey("FormResidentRequestId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("FormResidentRequest");
+                });
+
+            modelBuilder.Entity("Server.Common.Models.ModulePermission", b =>
+                {
+                    b.HasOne("Server.Common.Models.Module", null)
+                        .WithMany()
+                        .HasForeignKey("ModuleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Server.Common.Models.Permission", null)
+                        .WithMany()
+                        .HasForeignKey("PermissionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Server.Common.Models.RefreshToken", b =>
@@ -700,9 +901,9 @@ namespace Server.DataAccess.Migrations
 
             modelBuilder.Entity("Server.Common.Models.Account", b =>
                 {
-                    b.Navigation("Complaints");
-
                     b.Navigation("Documents");
+
+                    b.Navigation("FormResidentRequests");
 
                     b.Navigation("RefreshTokens");
 
@@ -721,23 +922,23 @@ namespace Server.DataAccess.Migrations
                     b.Navigation("Apartments");
                 });
 
-            modelBuilder.Entity("Server.Common.Models.Complaint", b =>
-                {
-                    b.Navigation("ComplaintDetails");
-                });
-
             modelBuilder.Entity("Server.Common.Models.Document", b =>
                 {
                     b.Navigation("DocumentDetails");
+                });
+
+            modelBuilder.Entity("Server.Common.Models.FormResidentRequest", b =>
+                {
+                    b.Navigation("FormResidentRequestDetails");
                 });
 
             modelBuilder.Entity("Server.Common.Models.Module", b =>
                 {
                     b.Navigation("Buildings");
 
-                    b.Navigation("Complaints");
-
                     b.Navigation("Documents");
+
+                    b.Navigation("FormResidentRequests");
 
                     b.Navigation("Residents");
                 });

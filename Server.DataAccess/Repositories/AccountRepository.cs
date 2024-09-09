@@ -40,26 +40,7 @@ namespace Server.DataAccess.Repositories
 
                 if (accountModule != null)
                 {
-                    // if (!string.IsNullOrEmpty(accountModule.AccessLevel) && accountModule.AccessLevel.Contains(permissionName.ToString()))
-                    // {
-                    //     return accountModule;
-                    // }
                     return accountModule;
-                }
-                else if (accountModule == null)
-                {
-                    if (await _authorizeRepository.VerifyModulePermission(account, roleName, permissionName))
-                    {
-                        accountModule = new()
-                        {
-                            AccountId = account.Id,
-                            ModuleId = module.Id
-                        };
-                        await _db.AccountModules.AddAsync(accountModule);
-                        await _db.SaveChangesAsync();
-
-                        return accountModule;
-                    }
                 }
 
                 throw new Exception("Can not access this module");
@@ -79,6 +60,11 @@ namespace Server.DataAccess.Repositories
         {
             account.Status = accountStatus.ToString();
             await _db.SaveChangesAsync();
+        }
+
+        public long CountAccount()
+        {
+            return _db.Accounts.Count();
         }
     }
 }
