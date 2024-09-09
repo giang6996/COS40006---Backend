@@ -164,7 +164,7 @@ namespace Server.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "FormResidentRequest",
+                name: "FormResidentRequests",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
@@ -175,15 +175,15 @@ namespace Server.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FormResidentRequest", x => x.Id);
+                    table.PrimaryKey("PK_FormResidentRequests", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_FormResidentRequest_Accounts_AccountId",
+                        name: "FK_FormResidentRequests_Accounts_AccountId",
                         column: x => x.AccountId,
                         principalTable: "Accounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_FormResidentRequest_Modules_ModuleId",
+                        name: "FK_FormResidentRequests_Modules_ModuleId",
                         column: x => x.ModuleId,
                         principalTable: "Modules",
                         principalColumn: "Id",
@@ -344,14 +344,15 @@ namespace Server.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "FormResidentRequestDetail",
+                name: "FormResidentRequestDetails",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     FormResidentRequestId = table.Column<long>(type: "bigint", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TYpe = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Label = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     RequestMediaLink = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -359,11 +360,11 @@ namespace Server.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FormResidentRequestDetail", x => x.Id);
+                    table.PrimaryKey("PK_FormResidentRequestDetails", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_FormResidentRequestDetail_FormResidentRequest_FormResidentRequestId",
+                        name: "FK_FormResidentRequestDetails_FormResidentRequests_FormResidentRequestId",
                         column: x => x.FormResidentRequestId,
-                        principalTable: "FormResidentRequest",
+                        principalTable: "FormResidentRequests",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -563,19 +564,19 @@ namespace Server.DataAccess.Migrations
                 column: "ModuleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FormResidentRequest_AccountId",
-                table: "FormResidentRequest",
+                name: "IX_FormResidentRequestDetails_FormResidentRequestId",
+                table: "FormResidentRequestDetails",
+                column: "FormResidentRequestId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FormResidentRequests_AccountId",
+                table: "FormResidentRequests",
                 column: "AccountId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FormResidentRequest_ModuleId",
-                table: "FormResidentRequest",
+                name: "IX_FormResidentRequests_ModuleId",
+                table: "FormResidentRequests",
                 column: "ModuleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_FormResidentRequestDetail_FormResidentRequestId",
-                table: "FormResidentRequestDetail",
-                column: "FormResidentRequestId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ModulePermissions_ModuleId",
@@ -638,7 +639,7 @@ namespace Server.DataAccess.Migrations
                 name: "DocumentDetails");
 
             migrationBuilder.DropTable(
-                name: "FormResidentRequestDetail");
+                name: "FormResidentRequestDetails");
 
             migrationBuilder.DropTable(
                 name: "ModulePermissions");
@@ -656,7 +657,7 @@ namespace Server.DataAccess.Migrations
                 name: "Documents");
 
             migrationBuilder.DropTable(
-                name: "FormResidentRequest");
+                name: "FormResidentRequests");
 
             migrationBuilder.DropTable(
                 name: "Apartments");

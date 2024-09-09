@@ -9,7 +9,8 @@ namespace Server.Common.Models
         [Required]
         public required long FormResidentRequestId { get; set; }
         public required string Title { get; set; }
-        public required string TYpe { get; set; }
+        public required string Type { get; set; }
+        public required string Label { get; set; }
         public required string Description { get; set; }
         public required string Status { get; set; }
         public string? RequestMediaLink { get; set; }

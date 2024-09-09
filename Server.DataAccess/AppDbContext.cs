@@ -25,6 +25,8 @@ namespace Server.DataAccess
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<AccessToken> AccessTokens { get; set; }
         public DbSet<ModulePermission> ModulePermissions { get; set; }
+        public DbSet<FormResidentRequest> FormResidentRequests { get; set; }
+        public DbSet<FormResidentRequestDetail> FormResidentRequestDetails { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

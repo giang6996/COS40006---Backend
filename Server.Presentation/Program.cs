@@ -37,7 +37,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidAudience = builder.Configuration["JwtBearer:Audience"],
             ValidateIssuerSigningKey = true,
             IssuerSigningKey = new SymmetricSecurityKey
-            (Encoding.UTF8.GetBytes(builder.Configuration["JwtBearer:Key"])),
+            (Encoding.UTF8.GetBytes(builder.Configuration["JwtBearer:Key"] ?? throw new Exception("Unexpected Error"))),
             ValidateLifetime = true,
             ClockSkew = TimeSpan.Zero
         };
@@ -77,6 +77,8 @@ builder.Services.AddScoped<IAuthorizeRepository, AuthorizeRepository>();
 builder.Services.AddScoped<IResidentService, ResidentService>();
 builder.Services.AddScoped<IResidentRepository, ResidentRepository>();
 builder.Services.AddScoped<IDocRepository, DocRepository>();
+builder.Services.AddScoped<IFormService, FormService>();
+builder.Services.AddScoped<IFormRepository, FormRepository>();
 
 var app = builder.Build();
 

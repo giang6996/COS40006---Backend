@@ -35,7 +35,7 @@ namespace Server.BusinessLogic.Services
             };
 
             // Get the secret key from the appsettings.json file
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtBearer:Key"]));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtBearer:Key"] ?? throw new Exception("Unexpected Error")));
             // Create the signing credentials using the secret key
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
@@ -73,7 +73,7 @@ namespace Server.BusinessLogic.Services
                 ValidateAudience = true,
                 ValidAudience = _configuration["JwtBearer:Audience"],
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtBearer:Key"])),
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtBearer:Key"] ?? throw new Exception("Unexpected Error"))),
                 ValidateLifetime = validateLifetimeParam,
                 ClockSkew = TimeSpan.Zero
             };

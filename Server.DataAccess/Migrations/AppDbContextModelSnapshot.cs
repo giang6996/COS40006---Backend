@@ -312,7 +312,7 @@ namespace Server.DataAccess.Migrations
 
                     b.HasIndex("ModuleId");
 
-                    b.ToTable("FormResidentRequest");
+                    b.ToTable("FormResidentRequests");
                 });
 
             modelBuilder.Entity("Server.Common.Models.FormResidentRequestDetail", b =>
@@ -330,6 +330,10 @@ namespace Server.DataAccess.Migrations
                     b.Property<long>("FormResidentRequestId")
                         .HasColumnType("bigint");
 
+                    b.Property<string>("Label")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("RequestMediaLink")
                         .HasColumnType("nvarchar(max)");
 
@@ -340,11 +344,11 @@ namespace Server.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TYpe")
+                    b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Title")
+                    b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -352,7 +356,7 @@ namespace Server.DataAccess.Migrations
 
                     b.HasIndex("FormResidentRequestId");
 
-                    b.ToTable("FormResidentRequestDetail");
+                    b.ToTable("FormResidentRequestDetails");
                 });
 
             modelBuilder.Entity("Server.Common.Models.Module", b =>
