@@ -8,6 +8,7 @@ namespace Server.DataAccess.Interfaces
     {
         Task<Role> GetRoleByName(Common.Enums.Role roleName);
         Task<Role> GetRoleOfAccount(Account account, Common.Enums.Role roleName);
+        Task<Role> FetchRoleFromAccount(Account account);
         Task<bool> VerifyModulePermission(Account account, Common.Enums.Role roleName, Common.Enums.Permission permissionName);
         Task AssignAccountRole(Account account, Common.Enums.Role roleName);
     }

@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using Server.BusinessLogic.Interfaces;
+using Server.Common.DTOs;
 using Server.Models.DTOs.Form;
 
 namespace Server.Presentation.Controllers
@@ -40,7 +41,36 @@ namespace Server.Presentation.Controllers
 
                 throw;
             }
+        }
 
+        [HttpGet("get-all")]
+        public async Task<IActionResult> GetAllRequest([FromQuery] string? status, string? label, string? type)
+        {
+            try
+            {
+                var authorizationHeader = Request.Headers[HeaderNames.Authorization];
+                if (authorizationHeader.ToString().StartsWith("Bearer"))
+                {
+                    var accessToken = authorizationHeader.ToString()["Bearer ".Length..].Trim();
+                    List<FormResponse> formResponses = await _formService.HandleGetAllFormRequest(accessToken, status, label, type);
+
+                    return Ok(formResponses);
+                }
+
+                throw new Exception("Unexpected Error");
+            }
+            catch (System.Exception)
+            {
+
+                throw;
+            }
+
+        }
+
+        [HttpGet("get-detail")]
+        public IActionResult GetRequestDetail([FromQuery] long id)
+        {
+            return Ok(id.ToString());
         }
     }
 }

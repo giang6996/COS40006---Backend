@@ -30,6 +30,17 @@ namespace Server.DataAccess.Repositories
             await _db.SaveChangesAsync();
         }
 
+        public async Task<Role> FetchRoleFromAccount(Account account)
+        {
+            Role? role = await (from a in _db.Accounts
+                                join ar in _db.AccountRoles on a.Id equals ar.AccountId
+                                join r in _db.Roles on ar.RoleId equals r.Id
+                                where a.Id == account.Id
+                                select r).FirstOrDefaultAsync();
+
+            return role ?? throw new Exception("Role not found");
+        }
+
         public async Task<Role> GetRoleByName(Common.Enums.Role roleName)
         {
             return await _db.Roles.Where(r => r.Name == roleName.ToString()).FirstOrDefaultAsync() ?? throw new Exception("Role not found");
