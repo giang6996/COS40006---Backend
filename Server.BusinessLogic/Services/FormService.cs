@@ -22,6 +22,36 @@ namespace Server.BusinessLogic.Services
             _authorizeRepository = authorizeRepository;
         }
 
+        public async Task HandleAdminResponse(string accessToken, long id, string response, string status)
+        {
+            try
+            {
+                Account account = await _authLibraryService.FetchAccount(accessToken);
+                Common.Models.Role role = await _authorizeRepository.FetchRoleFromAccount(account);
+
+                if (role.Name == Common.Enums.Role.Admin.ToString())
+                {
+                    if (Enum.TryParse(status, out FormStatus statusParsed))
+                    {
+                        await _formRepository.UpdateFormResponse(id, response, status);
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Given status not valid");
+                    }
+                }
+                else
+                {
+                    throw new Exception("You not have permission");
+                }
+
+            }
+            catch (System.Exception)
+            {
+                throw;
+            }
+        }
+
         public async Task<List<FormResponse>> HandleGetAllFormRequest(string accessToken, string? status, string? label, string? type)
         {
             try

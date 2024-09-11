@@ -2,6 +2,7 @@ namespace Server.Common.DTOs
 {
     public class FormResponse
     {
+        public required long Id { get; set; }
         public string? ResidentName { get; set; }
         public required string Title { get; set; }
         public required string Description { get; set; }

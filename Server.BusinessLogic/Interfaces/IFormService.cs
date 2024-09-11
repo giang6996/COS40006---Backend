@@ -8,5 +8,6 @@ namespace Server.BusinessLogic.Interfaces
         Task HandleNewRequest(FormResidentRequest request, string accessToken);
 
         Task<List<FormResponse>> HandleGetAllFormRequest(string accessToken, string? status, string? label, string? type);
+        Task HandleAdminResponse(string accessToken, long id, string response, string status);
     }
 }

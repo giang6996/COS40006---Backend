@@ -61,16 +61,35 @@ namespace Server.Presentation.Controllers
             }
             catch (System.Exception)
             {
-
-                throw;
+                return StatusCode(StatusCodes.Status500InternalServerError);
             }
-
         }
 
         [HttpGet("get-detail")]
         public IActionResult GetRequestDetail([FromQuery] long id)
         {
             return Ok(id.ToString());
+        }
+
+        [HttpPost("admin-response")]
+        public async Task<IActionResult> UpdateRequest([FromQuery] long id, [FromBody] FormUpdate request)
+        {
+            try
+            {
+                var authorizationHeader = Request.Headers[HeaderNames.Authorization];
+                if (authorizationHeader.ToString().StartsWith("Bearer"))
+                {
+                    var accessToken = authorizationHeader.ToString()["Bearer ".Length..].Trim();
+                    await _formService.HandleAdminResponse(accessToken, id, request.Response, request.Status);
+                    return Ok();
+                }
+
+                throw new Exception("Unexpected Error");
+            }
+            catch (System.Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
     }
 }

@@ -9,5 +9,7 @@ namespace Server.DataAccess.Interfaces
         Task AddNewFormDetailAsync(FormResidentRequestDetail formResidentRequestDetail);
         Task<List<FormResponse>> GetAllFormRequestByAccount(Account account, string? status, string? label, string? type);
         Task<List<FormResponse>> GetAllFormRequest(string? status, string? label, string? type);
+        Task<FormResponse> GetFormRequestDetail(long id);
+        Task UpdateFormResponse(long id, string response, string status);
     }
 }

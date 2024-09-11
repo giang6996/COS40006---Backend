@@ -116,5 +116,22 @@ namespace Server.BusinessLogic.Services
 
             throw new InvalidOperationException("Failed to generate tokens.");
         }
+
+        public async Task<AccountDTO> GetAccountInfos(string accessToken)
+        {
+            Account account = await _authLibraryService.FetchAccount(accessToken);
+            AccountDTO accountDTO = new()
+            {
+                Id = account.Id,
+                TenantId = account.TenantId,
+                FirstName = account.FirstName,
+                LastName = account.LastName,
+                Email = account.Email,
+                PhoneNumber = account.PhoneNumber,
+                Status = account.Status
+            };
+
+            return accountDTO;
+        }
     }
 }

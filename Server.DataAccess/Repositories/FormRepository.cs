@@ -57,6 +57,7 @@ namespace Server.DataAccess.Repositories
 
             List<FormResponse> formResponses = result.Select(r => new FormResponse
             {
+                Id = r.f.Id,
                 ResidentName = r.a.Email,
                 Title = r.fd.Title,
                 Description = r.fd.Description,
@@ -99,6 +100,7 @@ namespace Server.DataAccess.Repositories
 
             List<FormResponse> formResponses = result.Select(r => new FormResponse
             {
+                Id = r.f.Id,
                 Title = r.fd.Title,
                 Description = r.fd.Description,
                 Status = r.fd.Status,
@@ -110,5 +112,39 @@ namespace Server.DataAccess.Repositories
             return formResponses;
         }
 
+        public async Task<FormResponse> GetFormRequestDetail(long id)
+        {
+            var r = await (
+                from f in _db.FormResidentRequests
+                join fd in _db.FormResidentRequestDetails on f.Id equals fd.FormResidentRequestId
+                where f.Id == id
+                select new { f, fd }
+            ).FirstAsync() ?? throw new Exception("Not found resident form request");
+
+            FormResponse formResponse = new()
+            {
+                Id = r.f.Id,
+                Title = r.fd.Title,
+                Description = r.fd.Description,
+                Status = r.fd.Status,
+                Label = r.fd.Label,
+                Type = r.fd.Type,
+                CreateAt = r.f.Timestamp
+            };
+
+            return formResponse;
+        }
+
+        public async Task UpdateFormResponse(long id, string response, string status)
+        {
+            FormResidentRequestDetail formResidentRequestDetail = await _db.FormResidentRequestDetails.Where(fd => fd.FormResidentRequestId == id).FirstAsync()
+            ?? throw new Exception("Update Form not found");
+
+            formResidentRequestDetail.Response = response;
+            formResidentRequestDetail.Status = status;
+
+            _db.FormResidentRequestDetails.Update(formResidentRequestDetail);
+            await _db.SaveChangesAsync();
+        }
     }
 }
