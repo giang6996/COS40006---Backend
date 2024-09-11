@@ -30,6 +30,43 @@ namespace Server.DataAccess.Repositories
             await _db.SaveChangesAsync();
         }
 
+        public bool CheckAccountPermission(string token, string requiredPermission)
+        {
+            Account account = (from at in _db.AccessTokens
+                               join rt in _db.RefreshTokens on at.RtId equals rt.Id
+                               join a in _db.Accounts on rt.AccountId equals a.Id
+                               where at.Value == token
+                               select a).FirstOrDefault() ?? throw new Exception("Account not found from this access token");
+
+            var accountPermissions = (from ap in _db.AccountPermissions
+                                      join p in _db.Permissions on ap.PermissionId equals p.Id
+                                      where ap.AccountId == account.Id
+                                      select p.PermissionName
+                                        ).ToList();
+
+            var rolePermissions = (from ar in _db.AccountRoles
+                                   join rp in _db.RolePermissions on ar.RoleId equals rp.RoleId
+                                   join p in _db.Permissions on rp.PermissionId equals p.Id
+                                   where ar.AccountId == account.Id
+                                   select p.PermissionName
+                                        ).ToList();
+
+            var groupPermissions = (from ag in _db.AccountGroups
+                                    join gp in _db.GroupPermissions on ag.GroupId equals gp.GroupId
+                                    join p in _db.Permissions on gp.PermissionId equals p.Id
+                                    where ag.AccountId == account.Id
+                                    select p.PermissionName
+                                        ).ToList();
+
+            var allPermissions = accountPermissions
+                                    .Concat(rolePermissions)
+                                    .Concat(groupPermissions)
+                                    .Distinct()
+                                    .ToList();
+
+            return allPermissions.Contains(requiredPermission);
+        }
+
         public async Task<Role> FetchRoleFromAccount(Account account)
         {
             Role? role = await (from a in _db.Accounts

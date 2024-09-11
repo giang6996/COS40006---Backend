@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using Server.BusinessLogic.Interfaces;
 using Server.Models.DTOs.Account;
+using Server.Presentation.CustomAuthorizes;
 
 namespace Server.Presentation.Controllers
 {
@@ -38,6 +39,13 @@ namespace Server.Presentation.Controllers
             {
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
+        }
+
+        [HttpGet("test")]
+        [CustomAuthorize("CreatePropertyDossier")]
+        public IActionResult Test()
+        {
+            return Ok("ha ha");
         }
     }
 }

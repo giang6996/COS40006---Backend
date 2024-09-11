@@ -98,11 +98,15 @@ namespace Server.BusinessLogic.Services
                 await _formRepository.AddNewFormAsync(formResidentRequest);
 
                 bool parseLabelState = Enum.TryParse(request.Label, out FormLabel formLabel);
+                bool parseTypeState = Enum.TryParse(request.Type, out FormType formType);
+                if (!parseTypeState)
+                    throw new Exception("Form Type not found");
+
                 FormResidentRequestDetail formResidentRequestDetail = new()
                 {
                     FormResidentRequestId = formResidentRequest.Id,
                     Title = request.Title,
-                    Type = request.Type,
+                    Type = formType.ToString(),
                     Label = parseLabelState ? formLabel.ToString() : FormLabel.Other.ToString(),
                     Description = request.Description,
                     Status = FormStatus.Submitted.ToString(),

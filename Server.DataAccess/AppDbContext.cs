@@ -27,6 +27,10 @@ namespace Server.DataAccess
         public DbSet<ModulePermission> ModulePermissions { get; set; }
         public DbSet<FormResidentRequest> FormResidentRequests { get; set; }
         public DbSet<FormResidentRequestDetail> FormResidentRequestDetails { get; set; }
+        public DbSet<Group> Groups { get; set; }
+        public DbSet<GroupPermission> GroupPermissions { get; set; }
+        public DbSet<AccountGroup> AccountGroups { get; set; }
+        public DbSet<AccountPermission> AccountPermissions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -65,6 +69,16 @@ namespace Server.DataAccess
                 .HasForeignKey<Resident>(r => r.AccountId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Account>()
+                .HasMany(a => a.Permissions)
+                .WithMany(p => p.Accounts)
+                .UsingEntity<AccountPermission>();
+
+            modelBuilder.Entity<Account>()
+                .HasMany(a => a.Groups)
+                .WithMany(g => g.Accounts)
+                .UsingEntity<AccountGroup>();
 
             modelBuilder.Entity<Module>()
                 .HasMany(m => m.Documents)
@@ -166,6 +180,11 @@ namespace Server.DataAccess
                     new Module() { Id = 1, ModuleName = Server.Common.Enums.Module.PropertyDossier.ToString() },
                     new Module() { Id = 2, ModuleName = Server.Common.Enums.Module.Form.ToString() }
                 );
+
+            modelBuilder.Entity<Group>()
+                .HasMany(g => g.Permissions)
+                .WithMany(p => p.Groups)
+                .UsingEntity<GroupPermission>();
 
             modelBuilder.Entity<Permission>()
                 .HasData(

@@ -33,6 +33,20 @@ namespace Server.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Groups",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GroupName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TenantId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Groups", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Modules",
                 columns: table => new
                 {
@@ -105,6 +119,32 @@ namespace Server.DataAccess.Migrations
                         principalTable: "Accounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AccountGroups",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AccountId = table.Column<long>(type: "bigint", nullable: false),
+                    GroupId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AccountGroups", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AccountGroups_Accounts_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Accounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AccountGroups_Groups_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "Groups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -188,6 +228,58 @@ namespace Server.DataAccess.Migrations
                         principalTable: "Modules",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AccountPermissions",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AccountId = table.Column<long>(type: "bigint", nullable: false),
+                    PermissionId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AccountPermissions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AccountPermissions_Accounts_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Accounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AccountPermissions_Permissions_PermissionId",
+                        column: x => x.PermissionId,
+                        principalTable: "Permissions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GroupPermissions",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GroupId = table.Column<long>(type: "bigint", nullable: false),
+                    PermissionId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GroupPermissions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_GroupPermissions_Groups_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "Groups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GroupPermissions_Permissions_PermissionId",
+                        column: x => x.PermissionId,
+                        principalTable: "Permissions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -508,6 +600,16 @@ namespace Server.DataAccess.Migrations
                 column: "RtId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AccountGroups_AccountId",
+                table: "AccountGroups",
+                column: "AccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AccountGroups_GroupId",
+                table: "AccountGroups",
+                column: "GroupId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AccountModules_AccountId",
                 table: "AccountModules",
                 column: "AccountId");
@@ -516,6 +618,16 @@ namespace Server.DataAccess.Migrations
                 name: "IX_AccountModules_ModuleId",
                 table: "AccountModules",
                 column: "ModuleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AccountPermissions_AccountId",
+                table: "AccountPermissions",
+                column: "AccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AccountPermissions_PermissionId",
+                table: "AccountPermissions",
+                column: "PermissionId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AccountRoles_AccountId",
@@ -579,6 +691,16 @@ namespace Server.DataAccess.Migrations
                 column: "ModuleId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_GroupPermissions_GroupId",
+                table: "GroupPermissions",
+                column: "GroupId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GroupPermissions_PermissionId",
+                table: "GroupPermissions",
+                column: "PermissionId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ModulePermissions_ModuleId",
                 table: "ModulePermissions",
                 column: "ModuleId");
@@ -627,7 +749,13 @@ namespace Server.DataAccess.Migrations
                 name: "AccessTokens");
 
             migrationBuilder.DropTable(
+                name: "AccountGroups");
+
+            migrationBuilder.DropTable(
                 name: "AccountModules");
+
+            migrationBuilder.DropTable(
+                name: "AccountPermissions");
 
             migrationBuilder.DropTable(
                 name: "AccountRoles");
@@ -640,6 +768,9 @@ namespace Server.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "FormResidentRequestDetails");
+
+            migrationBuilder.DropTable(
+                name: "GroupPermissions");
 
             migrationBuilder.DropTable(
                 name: "ModulePermissions");
@@ -658,6 +789,9 @@ namespace Server.DataAccess.Migrations
 
             migrationBuilder.DropTable(
                 name: "FormResidentRequests");
+
+            migrationBuilder.DropTable(
+                name: "Groups");
 
             migrationBuilder.DropTable(
                 name: "Apartments");

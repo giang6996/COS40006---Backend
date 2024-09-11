@@ -86,6 +86,29 @@ namespace Server.DataAccess.Migrations
                     b.ToTable("Accounts");
                 });
 
+            modelBuilder.Entity("Server.Common.Models.AccountGroup", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("AccountId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("GroupId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("GroupId");
+
+                    b.ToTable("AccountGroups");
+                });
+
             modelBuilder.Entity("Server.Common.Models.AccountModule", b =>
                 {
                     b.Property<long>("Id")
@@ -107,6 +130,29 @@ namespace Server.DataAccess.Migrations
                     b.HasIndex("ModuleId");
 
                     b.ToTable("AccountModules");
+                });
+
+            modelBuilder.Entity("Server.Common.Models.AccountPermission", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("AccountId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("PermissionId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AccountId");
+
+                    b.HasIndex("PermissionId");
+
+                    b.ToTable("AccountPermissions");
                 });
 
             modelBuilder.Entity("Server.Common.Models.AccountRole", b =>
@@ -357,6 +403,48 @@ namespace Server.DataAccess.Migrations
                     b.HasIndex("FormResidentRequestId");
 
                     b.ToTable("FormResidentRequestDetails");
+                });
+
+            modelBuilder.Entity("Server.Common.Models.Group", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("GroupName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<long>("TenantId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Groups");
+                });
+
+            modelBuilder.Entity("Server.Common.Models.GroupPermission", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<long>("GroupId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("PermissionId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("PermissionId");
+
+                    b.ToTable("GroupPermissions");
                 });
 
             modelBuilder.Entity("Server.Common.Models.Module", b =>
@@ -701,6 +789,21 @@ namespace Server.DataAccess.Migrations
                     b.Navigation("RefreshToken");
                 });
 
+            modelBuilder.Entity("Server.Common.Models.AccountGroup", b =>
+                {
+                    b.HasOne("Server.Common.Models.Account", null)
+                        .WithMany()
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Server.Common.Models.Group", null)
+                        .WithMany()
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Server.Common.Models.AccountModule", b =>
                 {
                     b.HasOne("Server.Common.Models.Account", null)
@@ -712,6 +815,21 @@ namespace Server.DataAccess.Migrations
                     b.HasOne("Server.Common.Models.Module", null)
                         .WithMany()
                         .HasForeignKey("ModuleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Server.Common.Models.AccountPermission", b =>
+                {
+                    b.HasOne("Server.Common.Models.Account", null)
+                        .WithMany()
+                        .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Server.Common.Models.Permission", null)
+                        .WithMany()
+                        .HasForeignKey("PermissionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -830,6 +948,21 @@ namespace Server.DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("FormResidentRequest");
+                });
+
+            modelBuilder.Entity("Server.Common.Models.GroupPermission", b =>
+                {
+                    b.HasOne("Server.Common.Models.Group", null)
+                        .WithMany()
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Server.Common.Models.Permission", null)
+                        .WithMany()
+                        .HasForeignKey("PermissionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Server.Common.Models.ModulePermission", b =>

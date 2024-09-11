@@ -22,5 +22,7 @@ namespace Server.Common.Models
         public Resident? Resident { get; set; }
         public List<Role> Roles { get; } = new();
         public List<RefreshToken> RefreshTokens { get; } = new();
+        public List<Group> Groups { get; } = new();
+        public List<Permission> Permissions { get; } = new();
     }
 }

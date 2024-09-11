@@ -10,5 +10,7 @@ namespace Server.Common.Models
 
         public List<Role> Roles { get; } = new();
         public List<Module> Modules { get; } = new();
+        public List<Group> Groups { get; } = new();
+        public List<Account> Accounts { get; } = new();
     }
 }
