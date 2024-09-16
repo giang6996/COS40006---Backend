@@ -19,6 +19,21 @@ namespace Server.BusinessLogic.Services
             _permissionRepository = permissionRepository;
         }
 
+        public async Task HandleAddAccounts(AddAccountToGroupRequest request)
+        {
+            List<AccountGroup> accountGroups = new();
+            request.AccountIds.ForEach(id =>
+            {
+                accountGroups.Add(new()
+                {
+                    AccountId = id,
+                    GroupId = request.GroupId
+                });
+            });
+
+            await _groupRepository.AddAccountGroups(accountGroups);
+        }
+
         public async Task HandleCreateGroup(string accessToken, CreateGroupRequest request)
         {
             long accountId = (long)Convert.ToDouble(_authLibraryService.GetClaimValue(ClaimTypes.NameIdentifier, accessToken));

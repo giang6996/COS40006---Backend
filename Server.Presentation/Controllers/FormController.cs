@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using Server.BusinessLogic.Interfaces;
 using Server.Common.DTOs;
+using Server.Common.Enums;
 using Server.Models.DTOs.Form;
+using Server.Presentation.CustomAttributes;
 
 namespace Server.Presentation.Controllers
 {
@@ -44,15 +46,21 @@ namespace Server.Presentation.Controllers
         }
 
         [HttpGet("get-all")]
+        [CustomAuthorize(Permission.CanViewAllForms, Permission.CanViewTenantForms, Permission.CanViewOwnForms)]
         public async Task<IActionResult> GetAllRequest([FromQuery] string? status, string? label, string? type)
         {
+            if (!Enum.TryParse(HttpContext.Items["UserPermission"]?.ToString(), out Permission userPermission))
+            {
+                return Forbid();
+            }
+
             try
             {
                 var authorizationHeader = Request.Headers[HeaderNames.Authorization];
                 if (authorizationHeader.ToString().StartsWith("Bearer"))
                 {
                     var accessToken = authorizationHeader.ToString()["Bearer ".Length..].Trim();
-                    List<FormResponse> formResponses = await _formService.HandleGetAllFormRequest(accessToken, status, label, type);
+                    List<FormResponse> formResponses = await _formService.HandleGetAllFormRequest(accessToken, userPermission, status, label, type);
 
                     return Ok(formResponses);
                 }

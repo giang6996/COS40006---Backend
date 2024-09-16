@@ -11,6 +11,9 @@ namespace Server.Common.Enums
         ReadForm,
         UpdateForm,
         DeleteForm,
+        CanViewAllForms,
+        CanViewTenantForms,
+        CanViewOwnForms,
 
         ReadAllNewResidentRequest,
         UpdateNewResidentRequest,

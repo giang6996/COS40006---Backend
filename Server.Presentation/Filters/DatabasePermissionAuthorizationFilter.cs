@@ -9,26 +9,40 @@ namespace Server.Presentation.Filters
     public class DatabasePermissionAuthorizationFilter : IAsyncAuthorizationFilter
     {
         private readonly IAuthorizeRepository _authorizeRepository;
-        private readonly Permission _requiredPermission;
+        private readonly Permission[] _requiredPermissions;
 
-        public DatabasePermissionAuthorizationFilter(IAuthorizeRepository authorizeRepository, Permission requiredPermission)
+        public DatabasePermissionAuthorizationFilter(IAuthorizeRepository authorizeRepository, Permission[] requiredPermissions)
         {
             _authorizeRepository = authorizeRepository;
-            _requiredPermission = requiredPermission;
+            _requiredPermissions = requiredPermissions;
         }
 
         public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
-            var authorizationHeader = context.HttpContext.Request.Headers[HeaderNames.Authorization];
+            var authorizationHeader = context.HttpContext.Request.Headers[HeaderNames.Authorization].ToString();
 
-            if (authorizationHeader.ToString().StartsWith("Bearer"))
+            if (string.IsNullOrWhiteSpace(authorizationHeader) || !authorizationHeader.StartsWith("Bearer "))
             {
-                var accessToken = authorizationHeader.ToString()["Bearer ".Length..].Trim();
+                context.Result = new UnauthorizedResult();
+                return;
+            }
 
-                if (!await _authorizeRepository.CheckAccountPermission(accessToken, _requiredPermission.ToString()))
+            var accessToken = authorizationHeader["Bearer ".Length..].Trim();
+
+            bool hasPermission = false;
+            foreach (var requiredPermission in _requiredPermissions)
+            {
+                if (await _authorizeRepository.CheckAccountPermission(accessToken, requiredPermission.ToString()))
                 {
-                    context.Result = new ForbidResult();
+                    hasPermission = true;
+                    context.HttpContext.Items["UserPermission"] = requiredPermission;
+                    break;
                 }
+            }
+
+            if (!hasPermission)
+            {
+                context.Result = new ForbidResult();
             }
         }
     }

@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Server.BusinessLogic.Interfaces;
 using Server.Common.DTOs;
 using Server.Common.Enums;
@@ -52,32 +53,30 @@ namespace Server.BusinessLogic.Services
             }
         }
 
-        public async Task<List<FormResponse>> HandleGetAllFormRequest(string accessToken, string? status, string? label, string? type)
+        public async Task<List<FormResponse>> HandleGetAllFormRequest(string accessToken, Common.Enums.Permission userPermission, string? status, string? label, string? type)
         {
             try
             {
-                Account account = await _authLibraryService.FetchAccount(accessToken);
-                Common.Models.Role role = await _authorizeRepository.FetchRoleFromAccount(account);
+                long accountId = (long)Convert.ToDouble(_authLibraryService.GetClaimValue(ClaimTypes.NameIdentifier, accessToken));
 
-                if (role.Name == Common.Enums.Role.Admin.ToString())
+                if (userPermission == Common.Enums.Permission.CanViewAllForms)
                 {
                     List<FormResponse> formResponses = await _formRepository.GetAllFormRequest(status, label, type);
                     return formResponses;
                 }
-                else if (role.Name == Common.Enums.Role.User.ToString())
+                else if (userPermission == Common.Enums.Permission.CanViewTenantForms)
                 {
-                    List<FormResponse> formResponses = await _formRepository.GetAllFormRequestByAccount(account, status, label, type);
+                    List<FormResponse> formResponses = await _formRepository.GetAllTenantForms(accountId, status, label, type);
                     return formResponses;
                 }
                 else
                 {
-                    throw new Exception("Invalid Role");
+                    List<FormResponse> formResponses = await _formRepository.GetAllOwnForms(accountId, status, label, type);
+                    return formResponses;
                 }
-
             }
             catch (System.Exception)
             {
-
                 throw;
             }
         }

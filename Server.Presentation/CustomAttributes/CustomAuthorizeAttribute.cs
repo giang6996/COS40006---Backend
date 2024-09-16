@@ -6,9 +6,9 @@ namespace Server.Presentation.CustomAttributes
 {
     public class CustomAuthorizeAttribute : TypeFilterAttribute
     {
-        public CustomAuthorizeAttribute(Permission permission) : base(typeof(DatabasePermissionAuthorizationFilter))
+        public CustomAuthorizeAttribute(params Permission[] permissions) : base(typeof(DatabasePermissionAuthorizationFilter))
         {
-            Arguments = new object[] { permission };
+            Arguments = new object[] { permissions };
         }
     }
 }

@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
@@ -13,17 +12,15 @@ namespace Server.Presentation.Controllers
     [Authorize]
     public class GroupController : ControllerBase
     {
-        private readonly IAuthLibraryService _authLibraryService;
         private readonly IGroupService _groupService;
 
-        public GroupController(IAuthLibraryService authLibraryService, IGroupService groupService)
+        public GroupController(IGroupService groupService)
         {
-            _authLibraryService = authLibraryService;
             _groupService = groupService;
         }
 
+        [HttpPost("create")]
         [CustomAuthorize(Common.Enums.Permission.CreateGroup)]
-        [HttpPost]
         public async Task<IActionResult> CreateGroup([FromBody] CreateGroupRequest request)
         {
             try
@@ -37,20 +34,27 @@ namespace Server.Presentation.Controllers
                     return Ok();
                 }
 
-                return BadRequest("Access token not valid");
+                throw new Exception("Access token not valid");
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
-
         }
 
-        [HttpGet]
+        [HttpPost("add-accounts")]
         [CustomAuthorize(Common.Enums.Permission.UpdateGroup)]
-        public IActionResult AddAccounts([FromBody] List<long> accountIds)
+        public async Task<IActionResult> AddAccounts([FromBody] AddAccountToGroupRequest request)
         {
-            throw new NotImplementedException();
+            try
+            {
+                await _groupService.HandleAddAccounts(request);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

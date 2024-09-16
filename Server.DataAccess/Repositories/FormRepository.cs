@@ -8,10 +8,12 @@ namespace Server.DataAccess.Repositories
     public class FormRepository : IFormRepository
     {
         private readonly AppDbContext _db;
+        private readonly IAccountRepository _accountRepository;
 
-        public FormRepository(AppDbContext db)
+        public FormRepository(AppDbContext db, IAccountRepository accountRepository)
         {
             _db = db;
+            _accountRepository = accountRepository;
         }
 
         public async Task AddNewFormAsync(FormResidentRequest formResidentRequest)
@@ -70,11 +72,56 @@ namespace Server.DataAccess.Repositories
             return formResponses;
         }
 
-        public async Task<List<FormResponse>> GetAllFormRequestByAccount(Account account, string? status, string? label, string? type)
+        public async Task<List<FormResponse>> GetAllOwnForms(long accountId, string? status, string? label, string? type)
         {
             var query = from f in _db.FormResidentRequests
                         join fd in _db.FormResidentRequestDetails on f.Id equals fd.FormResidentRequestId
-                        where f.AccountId == account.Id
+                        where f.AccountId == accountId
+                        select new
+                        {
+                            f,
+                            fd
+                        };
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                query = query.Where(r => r.fd.Status == status);
+            }
+
+            if (!string.IsNullOrEmpty(label))
+            {
+                query = query.Where(r => r.fd.Label == label);
+            }
+
+            if (!string.IsNullOrEmpty(type))
+            {
+                query = query.Where(r => r.fd.Type == type);
+            }
+
+            var result = await query.ToListAsync();
+
+            List<FormResponse> formResponses = result.Select(r => new FormResponse
+            {
+                Id = r.f.Id,
+                Title = r.fd.Title,
+                Description = r.fd.Description,
+                Status = r.fd.Status,
+                Label = r.fd.Label,
+                Type = r.fd.Type,
+                CreateAt = r.f.Timestamp
+            }).ToList();
+
+            return formResponses;
+        }
+
+        public async Task<List<FormResponse>> GetAllTenantForms(long accountId, string? status, string? label, string? type)
+        {
+            var account = await _accountRepository.GetAccountByAccountIdAsync(accountId);
+            long tenantId = account.TenantId;
+
+            var query = from f in _db.FormResidentRequests
+                        join fd in _db.FormResidentRequestDetails on f.Id equals fd.FormResidentRequestId
+                        where f.Account.TenantId == tenantId
                         select new
                         {
                             f,
