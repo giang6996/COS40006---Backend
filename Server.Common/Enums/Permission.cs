@@ -21,5 +21,10 @@ namespace Server.Common.Enums
         DeleteAccount,
 
         AssignRole,
+
+        CreateGroup,
+        ReadGroup,
+        UpdateGroup,
+        DeleteGroup,
     }
 }

@@ -1,4 +1,3 @@
-using Server.Common.Models;
 using Server.Models.DTOs.Resident;
 
 namespace Server.BusinessLogic.Interfaces

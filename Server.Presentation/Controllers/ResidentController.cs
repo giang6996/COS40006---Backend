@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Update.Internal;
 using Microsoft.Net.Http.Headers;
 using Server.BusinessLogic.Interfaces;
 using Server.Models.DTOs.Resident;

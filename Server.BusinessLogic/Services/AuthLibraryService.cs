@@ -31,6 +31,7 @@ namespace Server.BusinessLogic.Services
             {
                 new Claim(ClaimTypes.Email, account.Email),
                 new Claim(ClaimTypes.Name, account.Email),
+                new Claim(ClaimTypes.NameIdentifier, account.Id.ToString()),
                 //new Claim(ClaimTypes.Role, "Admin")
             };
 
@@ -178,6 +179,21 @@ namespace Server.BusinessLogic.Services
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
+            }
+        }
+
+        public string GetClaimValue(string claimType, string accessToken)
+        {
+            try
+            {
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var securityToken = (JwtSecurityToken)tokenHandler.ReadToken(accessToken);
+                var claimValue = securityToken.Claims.Where(c => c.Type == claimType).First().Value;
+                return claimValue;
+            }
+            catch (Exception)
+            {
+                throw new Exception("Claim not found");
             }
         }
     }

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using Server.BusinessLogic.Interfaces;
 using Server.Models.DTOs.Account;
-using Server.Presentation.CustomAuthorizes;
+using Server.Presentation.CustomAttributes;
 
 namespace Server.Presentation.Controllers
 {
@@ -42,7 +42,7 @@ namespace Server.Presentation.Controllers
         }
 
         [HttpGet("test")]
-        [CustomAuthorize("CreatePropertyDossier")]
+        [CustomAuthorize(Common.Enums.Permission.CreatePropertyDossier)]
         public IActionResult Test()
         {
             return Ok("ha ha");

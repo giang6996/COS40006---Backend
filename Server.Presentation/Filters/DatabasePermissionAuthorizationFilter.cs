@@ -1,23 +1,23 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.Net.Http.Headers;
-using Server.BusinessLogic.Interfaces;
+using Server.Common.Enums;
 using Server.DataAccess.Interfaces;
 
 namespace Server.Presentation.Filters
 {
-    public class DatabasePermissionAuthorizationFilter : IAuthorizationFilter
+    public class DatabasePermissionAuthorizationFilter : IAsyncAuthorizationFilter
     {
         private readonly IAuthorizeRepository _authorizeRepository;
-        private readonly string _requiredPermission;
+        private readonly Permission _requiredPermission;
 
-        public DatabasePermissionAuthorizationFilter(IAuthorizeRepository authorizeRepository, string requiredPermission)
+        public DatabasePermissionAuthorizationFilter(IAuthorizeRepository authorizeRepository, Permission requiredPermission)
         {
             _authorizeRepository = authorizeRepository;
             _requiredPermission = requiredPermission;
         }
 
-        public void OnAuthorization(AuthorizationFilterContext context)
+        public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
         {
             var authorizationHeader = context.HttpContext.Request.Headers[HeaderNames.Authorization];
 
@@ -25,7 +25,7 @@ namespace Server.Presentation.Filters
             {
                 var accessToken = authorizationHeader.ToString()["Bearer ".Length..].Trim();
 
-                if (!_authorizeRepository.CheckAccountPermission(accessToken, _requiredPermission))
+                if (!await _authorizeRepository.CheckAccountPermission(accessToken, _requiredPermission.ToString()))
                 {
                     context.Result = new ForbidResult();
                 }

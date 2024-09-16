@@ -1,4 +1,3 @@
-using Server.Common.Enums;
 using Server.Common.Models;
 using Role = Server.Common.Models.Role;
 
@@ -11,6 +10,6 @@ namespace Server.DataAccess.Interfaces
         Task<Role> FetchRoleFromAccount(Account account);
         Task<bool> VerifyModulePermission(Account account, Common.Enums.Role roleName, Common.Enums.Permission permissionName);
         Task AssignAccountRole(Account account, Common.Enums.Role roleName);
-        bool CheckAccountPermission(string token, string requiredPermission);
+        Task<bool> CheckAccountPermission(string token, string requiredPermission);
     }
 }
