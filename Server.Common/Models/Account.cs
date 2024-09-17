@@ -24,5 +24,6 @@ namespace Server.Common.Models
         public List<RefreshToken> RefreshTokens { get; } = new();
         public List<Group> Groups { get; } = new();
         public List<Permission> Permissions { get; } = new();
+        public Tenant? Tenant { get; set; }
     }
 }

@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 using Server.Common.Models;
 
 namespace Server.DataAccess
@@ -13,7 +12,7 @@ namespace Server.DataAccess
         public DbSet<Module> Modules { get; set; }
         public DbSet<Document> Documents { get; set; }
         public DbSet<DocumentDetail> DocumentDetails { get; set; }
-        public DbSet<Urban> Urbans { get; set; }
+        public DbSet<Urban> UrbanAreas { get; set; }
         public DbSet<Resident> Residents { get; set; }
         public DbSet<Building> Buildings { get; set; }
         public DbSet<Apartment> Apartments { get; set; }
@@ -24,13 +23,13 @@ namespace Server.DataAccess
         public DbSet<AccountRole> AccountRoles { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<AccessToken> AccessTokens { get; set; }
-        public DbSet<ModulePermission> ModulePermissions { get; set; }
         public DbSet<FormResidentRequest> FormResidentRequests { get; set; }
         public DbSet<FormResidentRequestDetail> FormResidentRequestDetails { get; set; }
         public DbSet<Group> Groups { get; set; }
         public DbSet<GroupPermission> GroupPermissions { get; set; }
         public DbSet<AccountGroup> AccountGroups { get; set; }
         public DbSet<AccountPermission> AccountPermissions { get; set; }
+        public DbSet<Tenant> Tenants { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -38,11 +37,6 @@ namespace Server.DataAccess
                 .HasMany(a => a.Roles)
                 .WithMany(r => r.Accounts)
                 .UsingEntity<AccountRole>();
-
-            modelBuilder.Entity<Role>()
-                .HasMany(r => r.Permissions)
-                .WithMany(p => p.Roles)
-                .UsingEntity<RolePermission>();
 
             modelBuilder.Entity<Account>()
                 .HasMany(a => a.Modules)
@@ -80,6 +74,23 @@ namespace Server.DataAccess
                 .WithMany(g => g.Accounts)
                 .UsingEntity<AccountGroup>();
 
+            modelBuilder.Entity<Account>()
+                .HasOne(a => a.Tenant)
+                .WithMany(t => t.Accounts)
+                .HasForeignKey(a => a.TenantId);
+
+            modelBuilder.Entity<Account>()
+                .HasMany(a => a.RefreshTokens)
+                .WithOne(r => r.Account)
+                .HasForeignKey(r => r.AccountId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Role>()
+                .HasMany(r => r.Permissions)
+                .WithMany(p => p.Roles)
+                .UsingEntity<RolePermission>();
+
             modelBuilder.Entity<Module>()
                 .HasMany(m => m.Documents)
                 .WithOne(d => d.Module)
@@ -107,11 +118,6 @@ namespace Server.DataAccess
                 .HasForeignKey(r => r.ModuleId)
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Module>()
-                .HasMany(m => m.Permissions)
-                .WithMany(p => p.Modules)
-                .UsingEntity<ModulePermission>();
 
             modelBuilder.Entity<Document>()
                 .HasMany(d => d.DocumentDetails)
@@ -141,6 +147,12 @@ namespace Server.DataAccess
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Building>()
+                .HasOne(b => b.Tenant)
+                .WithMany(t => t.Buildings)
+                .HasForeignKey(b => b.TenantId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<Apartment>()
                 .HasOne(a => a.ApartmentDetail)
                 .WithOne(ad => ad.Apartment)
@@ -155,18 +167,17 @@ namespace Server.DataAccess
                 .IsRequired()
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Account>()
-                .HasMany(a => a.RefreshTokens)
-                .WithOne(r => r.Account)
-                .HasForeignKey(r => r.AccountId)
-                .IsRequired()
-                .OnDelete(DeleteBehavior.Restrict);
-
             modelBuilder.Entity<RefreshToken>()
                 .HasMany(r => r.AccessTokens)
                 .WithOne(a => a.RefreshToken)
                 .HasForeignKey(a => a.RtId)
                 .IsRequired()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Group>()
+                .HasOne(g => g.Tenant)
+                .WithMany(t => t.Groups)
+                .HasForeignKey(g => g.TenantId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Role>()
@@ -186,6 +197,26 @@ namespace Server.DataAccess
                 .WithMany(p => p.Groups)
                 .UsingEntity<GroupPermission>();
 
+
+            // Seeds Data
+            modelBuilder.Entity<Tenant>()
+                .HasData(
+                    new Tenant() { Id = 1, Name = "Google" },
+                    new Tenant() { Id = 2, Name = "Apple" },
+                    new Tenant() { Id = 3, Name = "Microsoft" },
+                    new Tenant() { Id = 4, Name = "Facebook" },
+                    new Tenant() { Id = 5, Name = "Amazon" }
+                );
+
+            modelBuilder.Entity<Account>()
+                .HasData(
+                    new Account() { Id = 1, TenantId = 1, Email = "test001@gmail.com", Password = "$2a$11$eaCV0/gsB6YuF3e86QZ2CeUAb2dK7L1rSfuNxNiVPyGpkEVqzj6s.", FirstName = "test", LastName = "001", Status = Server.Common.Enums.AccountStatus.Active.ToString() },
+                    new Account() { Id = 2, TenantId = 1, Email = "test002@gmail.com", Password = "$2a$11$eaCV0/gsB6YuF3e86QZ2CeUAb2dK7L1rSfuNxNiVPyGpkEVqzj6s.", FirstName = "test", LastName = "002", Status = Server.Common.Enums.AccountStatus.Pending.ToString() },
+                    new Account() { Id = 3, TenantId = 2, Email = "test003@gmail.com", Password = "$2a$11$eaCV0/gsB6YuF3e86QZ2CeUAb2dK7L1rSfuNxNiVPyGpkEVqzj6s.", FirstName = "test", LastName = "003", Status = Server.Common.Enums.AccountStatus.Pending.ToString() },
+                    new Account() { Id = 4, TenantId = 3, Email = "test004@gmail.com", Password = "$2a$11$eaCV0/gsB6YuF3e86QZ2CeUAb2dK7L1rSfuNxNiVPyGpkEVqzj6s.", FirstName = "test", LastName = "004", Status = Server.Common.Enums.AccountStatus.Pending.ToString() },
+                    new Account() { Id = 5, TenantId = 5, Email = "test005@gmail.com", Password = "$2a$11$eaCV0/gsB6YuF3e86QZ2CeUAb2dK7L1rSfuNxNiVPyGpkEVqzj6s.", FirstName = "test", LastName = "005", Status = Server.Common.Enums.AccountStatus.Pending.ToString() }
+                );
+
             modelBuilder.Entity<Permission>()
                 .HasData(
                     new Permission() { Id = 1, PermissionName = Server.Common.Enums.Permission.CreateAccount.ToString() },
@@ -204,22 +235,16 @@ namespace Server.DataAccess
                     new Permission() { Id = 12, PermissionName = Server.Common.Enums.Permission.DeleteForm.ToString() },
 
                     new Permission() { Id = 13, PermissionName = Server.Common.Enums.Permission.ReadAllNewResidentRequest.ToString() },
-                    new Permission() { Id = 14, PermissionName = Server.Common.Enums.Permission.UpdateNewResidentRequest.ToString() }
-                );
+                    new Permission() { Id = 14, PermissionName = Server.Common.Enums.Permission.UpdateNewResidentRequest.ToString() },
 
-            modelBuilder.Entity<RolePermission>()
-                .HasData(
-                    new RolePermission() { Id = 3, RoleId = 1, PermissionId = 13 },
-                    new RolePermission() { Id = 4, RoleId = 1, PermissionId = 14 },
+                    new Permission() { Id = 15, PermissionName = Server.Common.Enums.Permission.CanViewAllForms.ToString() },
+                    new Permission() { Id = 16, PermissionName = Server.Common.Enums.Permission.CanViewTenantForms.ToString() },
+                    new Permission() { Id = 17, PermissionName = Server.Common.Enums.Permission.CanViewOwnForms.ToString() },
 
-                    new RolePermission() { Id = 5, RoleId = 2, PermissionId = 5 },
-                    new RolePermission() { Id = 6, RoleId = 2, PermissionId = 6 },
-                    new RolePermission() { Id = 7, RoleId = 2, PermissionId = 7 },
-                    new RolePermission() { Id = 8, RoleId = 2, PermissionId = 8 },
-                    new RolePermission() { Id = 9, RoleId = 2, PermissionId = 9 },
-                    new RolePermission() { Id = 10, RoleId = 2, PermissionId = 10 },
-                    new RolePermission() { Id = 11, RoleId = 2, PermissionId = 11 },
-                    new RolePermission() { Id = 12, RoleId = 2, PermissionId = 12 }
+                    new Permission() { Id = 18, PermissionName = Server.Common.Enums.Permission.CreateGroup.ToString() },
+                    new Permission() { Id = 19, PermissionName = Server.Common.Enums.Permission.ReadGroup.ToString() },
+                    new Permission() { Id = 20, PermissionName = Server.Common.Enums.Permission.UpdateGroup.ToString() },
+                    new Permission() { Id = 21, PermissionName = Server.Common.Enums.Permission.DeleteGroup.ToString() }
                 );
         }
 

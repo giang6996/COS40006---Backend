@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Server.BusinessLogic.Interfaces;
 using Server.Common.Models;
@@ -10,15 +11,13 @@ namespace Server.BusinessLogic.Services
     {
         private readonly IAuthLibraryService _authLibraryService;
         private readonly IFileService _fileService;
-        private readonly IAccountRepository _accountRepository;
         private readonly IModuleRepository _moduleRepository;
         private readonly IPropertyDossierRepository _propertyDossierRepository;
 
-        public PropertyDossierService(IAuthLibraryService authLibraryService, IFileService fileService, IAccountRepository accountRepository, IModuleRepository moduleRepository, IPropertyDossierRepository propertyDossierRepository)
+        public PropertyDossierService(IAuthLibraryService authLibraryService, IFileService fileService, IModuleRepository moduleRepository, IPropertyDossierRepository propertyDossierRepository)
         {
             _authLibraryService = authLibraryService;
             _fileService = fileService;
-            _accountRepository = accountRepository;
             _moduleRepository = moduleRepository;
             _propertyDossierRepository = propertyDossierRepository;
         }
@@ -27,11 +26,10 @@ namespace Server.BusinessLogic.Services
         {
             try
             {
-                Account account = await _authLibraryService.FetchAccount(accessToken);
+                long accountId = (long)Convert.ToDouble(_authLibraryService.GetClaimValue(ClaimTypes.NameIdentifier, accessToken));
                 Module module = await _moduleRepository.GetModuleByModuleName(Common.Enums.Module.PropertyDossier);
-                await _accountRepository.CheckAccountModule(module, account, Common.Enums.Role.User, Common.Enums.Permission.CreatePropertyDossier);
-                Document document = await _propertyDossierRepository.CreateNewDoc(module, account, apartmentInfo.RoomNumber, apartmentInfo.BuildingName, apartmentInfo.BuildingAddress);
-                await _fileService.UploadFileAsync(files, account, document);
+                Document document = await _propertyDossierRepository.CreateNewDoc(module, accountId, apartmentInfo.RoomNumber, apartmentInfo.BuildingName, apartmentInfo.BuildingAddress);
+                await _fileService.UploadFileAsync(files, accountId, document);
             }
             catch (Exception ex)
             {

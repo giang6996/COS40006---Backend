@@ -14,12 +14,12 @@ namespace Server.BusinessLogic.Services
             _fileRepository = fileRepository;
         }
 
-        public async Task<bool> UploadFileAsync(List<IFormFile> files, Account account, Document document)
+        public async Task<bool> UploadFileAsync(List<IFormFile> files, long accountId, Document document)
         {
             if (files == null || files.Count == 0)
                 throw new Exception("Invalid file");
 
-            return await _fileRepository.SaveFilesAsync(files, account, document);
+            return await _fileRepository.SaveFilesAsync(files, accountId, document);
         }
     }
 }

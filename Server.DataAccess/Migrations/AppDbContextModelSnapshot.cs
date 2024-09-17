@@ -22,6 +22,21 @@ namespace Server.DataAccess.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("ModulePermission", b =>
+                {
+                    b.Property<long>("ModulesId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("PermissionsId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("ModulesId", "PermissionsId");
+
+                    b.HasIndex("PermissionsId");
+
+                    b.ToTable("ModulePermission");
+                });
+
             modelBuilder.Entity("Server.Common.Models.AccessToken", b =>
                 {
                     b.Property<long>("Id")
@@ -83,7 +98,61 @@ namespace Server.DataAccess.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("TenantId");
+
                     b.ToTable("Accounts");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            Email = "test001@gmail.com",
+                            FirstName = "test",
+                            LastName = "001",
+                            Password = "$2a$11$eaCV0/gsB6YuF3e86QZ2CeUAb2dK7L1rSfuNxNiVPyGpkEVqzj6s.",
+                            Status = "Active",
+                            TenantId = 1L
+                        },
+                        new
+                        {
+                            Id = 2L,
+                            Email = "test002@gmail.com",
+                            FirstName = "test",
+                            LastName = "002",
+                            Password = "$2a$11$eaCV0/gsB6YuF3e86QZ2CeUAb2dK7L1rSfuNxNiVPyGpkEVqzj6s.",
+                            Status = "Pending",
+                            TenantId = 1L
+                        },
+                        new
+                        {
+                            Id = 3L,
+                            Email = "test003@gmail.com",
+                            FirstName = "test",
+                            LastName = "003",
+                            Password = "$2a$11$eaCV0/gsB6YuF3e86QZ2CeUAb2dK7L1rSfuNxNiVPyGpkEVqzj6s.",
+                            Status = "Pending",
+                            TenantId = 2L
+                        },
+                        new
+                        {
+                            Id = 4L,
+                            Email = "test004@gmail.com",
+                            FirstName = "test",
+                            LastName = "004",
+                            Password = "$2a$11$eaCV0/gsB6YuF3e86QZ2CeUAb2dK7L1rSfuNxNiVPyGpkEVqzj6s.",
+                            Status = "Pending",
+                            TenantId = 3L
+                        },
+                        new
+                        {
+                            Id = 5L,
+                            Email = "test005@gmail.com",
+                            FirstName = "test",
+                            LastName = "005",
+                            Password = "$2a$11$eaCV0/gsB6YuF3e86QZ2CeUAb2dK7L1rSfuNxNiVPyGpkEVqzj6s.",
+                            Status = "Pending",
+                            TenantId = 5L
+                        });
                 });
 
             modelBuilder.Entity("Server.Common.Models.AccountGroup", b =>
@@ -263,6 +332,8 @@ namespace Server.DataAccess.Migrations
 
                     b.HasIndex("ModuleId");
 
+                    b.HasIndex("TenantId");
+
                     b.HasIndex("UrbanId");
 
                     b.ToTable("Buildings");
@@ -421,6 +492,8 @@ namespace Server.DataAccess.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("TenantId");
+
                     b.ToTable("Groups");
                 });
 
@@ -477,29 +550,6 @@ namespace Server.DataAccess.Migrations
                             Id = 2L,
                             ModuleName = "Form"
                         });
-                });
-
-            modelBuilder.Entity("Server.Common.Models.ModulePermission", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<long>("ModuleId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("PermissionId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ModuleId");
-
-                    b.HasIndex("PermissionId");
-
-                    b.ToTable("ModulePermissions");
                 });
 
             modelBuilder.Entity("Server.Common.Models.Permission", b =>
@@ -588,6 +638,41 @@ namespace Server.DataAccess.Migrations
                         {
                             Id = 14L,
                             PermissionName = "UpdateNewResidentRequest"
+                        },
+                        new
+                        {
+                            Id = 15L,
+                            PermissionName = "CanViewAllForms"
+                        },
+                        new
+                        {
+                            Id = 16L,
+                            PermissionName = "CanViewTenantForms"
+                        },
+                        new
+                        {
+                            Id = 17L,
+                            PermissionName = "CanViewOwnForms"
+                        },
+                        new
+                        {
+                            Id = 18L,
+                            PermissionName = "CreateGroup"
+                        },
+                        new
+                        {
+                            Id = 19L,
+                            PermissionName = "ReadGroup"
+                        },
+                        new
+                        {
+                            Id = 20L,
+                            PermissionName = "UpdateGroup"
+                        },
+                        new
+                        {
+                            Id = 21L,
+                            PermissionName = "DeleteGroup"
                         });
                 });
 
@@ -698,67 +783,49 @@ namespace Server.DataAccess.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("RolePermissions");
+                });
+
+            modelBuilder.Entity("Server.Common.Models.Tenant", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tenants");
 
                     b.HasData(
                         new
                         {
+                            Id = 1L,
+                            Name = "Google"
+                        },
+                        new
+                        {
+                            Id = 2L,
+                            Name = "Apple"
+                        },
+                        new
+                        {
                             Id = 3L,
-                            PermissionId = 13L,
-                            RoleId = 1L
+                            Name = "Microsoft"
                         },
                         new
                         {
                             Id = 4L,
-                            PermissionId = 14L,
-                            RoleId = 1L
+                            Name = "Facebook"
                         },
                         new
                         {
                             Id = 5L,
-                            PermissionId = 5L,
-                            RoleId = 2L
-                        },
-                        new
-                        {
-                            Id = 6L,
-                            PermissionId = 6L,
-                            RoleId = 2L
-                        },
-                        new
-                        {
-                            Id = 7L,
-                            PermissionId = 7L,
-                            RoleId = 2L
-                        },
-                        new
-                        {
-                            Id = 8L,
-                            PermissionId = 8L,
-                            RoleId = 2L
-                        },
-                        new
-                        {
-                            Id = 9L,
-                            PermissionId = 9L,
-                            RoleId = 2L
-                        },
-                        new
-                        {
-                            Id = 10L,
-                            PermissionId = 10L,
-                            RoleId = 2L
-                        },
-                        new
-                        {
-                            Id = 11L,
-                            PermissionId = 11L,
-                            RoleId = 2L
-                        },
-                        new
-                        {
-                            Id = 12L,
-                            PermissionId = 12L,
-                            RoleId = 2L
+                            Name = "Amazon"
                         });
                 });
 
@@ -775,7 +842,22 @@ namespace Server.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Urbans");
+                    b.ToTable("UrbanAreas");
+                });
+
+            modelBuilder.Entity("ModulePermission", b =>
+                {
+                    b.HasOne("Server.Common.Models.Module", null)
+                        .WithMany()
+                        .HasForeignKey("ModulesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Server.Common.Models.Permission", null)
+                        .WithMany()
+                        .HasForeignKey("PermissionsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Server.Common.Models.AccessToken", b =>
@@ -787,6 +869,17 @@ namespace Server.DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("RefreshToken");
+                });
+
+            modelBuilder.Entity("Server.Common.Models.Account", b =>
+                {
+                    b.HasOne("Server.Common.Models.Tenant", "Tenant")
+                        .WithMany("Accounts")
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
                 });
 
             modelBuilder.Entity("Server.Common.Models.AccountGroup", b =>
@@ -879,6 +972,12 @@ namespace Server.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
+                    b.HasOne("Server.Common.Models.Tenant", "Tenant")
+                        .WithMany("Buildings")
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("Server.Common.Models.Urban", "Urban")
                         .WithMany("Buildings")
                         .HasForeignKey("UrbanId")
@@ -886,6 +985,8 @@ namespace Server.DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("Module");
+
+                    b.Navigation("Tenant");
 
                     b.Navigation("Urban");
                 });
@@ -950,26 +1051,22 @@ namespace Server.DataAccess.Migrations
                     b.Navigation("FormResidentRequest");
                 });
 
+            modelBuilder.Entity("Server.Common.Models.Group", b =>
+                {
+                    b.HasOne("Server.Common.Models.Tenant", "Tenant")
+                        .WithMany("Groups")
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+                });
+
             modelBuilder.Entity("Server.Common.Models.GroupPermission", b =>
                 {
                     b.HasOne("Server.Common.Models.Group", null)
                         .WithMany()
                         .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Server.Common.Models.Permission", null)
-                        .WithMany()
-                        .HasForeignKey("PermissionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("Server.Common.Models.ModulePermission", b =>
-                {
-                    b.HasOne("Server.Common.Models.Module", null)
-                        .WithMany()
-                        .HasForeignKey("ModuleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -1080,6 +1177,15 @@ namespace Server.DataAccess.Migrations
             modelBuilder.Entity("Server.Common.Models.RefreshToken", b =>
                 {
                     b.Navigation("AccessTokens");
+                });
+
+            modelBuilder.Entity("Server.Common.Models.Tenant", b =>
+                {
+                    b.Navigation("Accounts");
+
+                    b.Navigation("Buildings");
+
+                    b.Navigation("Groups");
                 });
 
             modelBuilder.Entity("Server.Common.Models.Urban", b =>

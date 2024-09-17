@@ -11,5 +11,6 @@ namespace Server.Common.Models
 
         public List<Account> Accounts { get; } = new();
         public List<Permission> Permissions { get; } = new();
+        public Tenant Tenant { get; set; } = null!;
     }
 }

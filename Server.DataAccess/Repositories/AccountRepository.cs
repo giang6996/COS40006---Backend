@@ -7,12 +7,10 @@ namespace Server.DataAccess.Repositories
     public class AccountRepository : IAccountRepository
     {
         private readonly AppDbContext _db;
-        private readonly IAuthorizeRepository _authorizeRepository;
 
-        public AccountRepository(AppDbContext db, IAuthorizeRepository authorizeRepository)
+        public AccountRepository(AppDbContext db)
         {
             _db = db;
-            _authorizeRepository = authorizeRepository;
         }
 
         public bool CheckAccountExist(string email)
@@ -29,25 +27,6 @@ namespace Server.DataAccess.Repositories
         public async Task<Account?> GetAccountByEmailAsync(string email)
         {
             return await _db.Accounts.Where(a => a.Email == email).FirstOrDefaultAsync();
-        }
-
-        public async Task<AccountModule> CheckAccountModule(Module module, Account account, Server.Common.Enums.Role roleName, Server.Common.Enums.Permission permissionName)
-        {
-            try
-            {
-                AccountModule? accountModule = await _db.AccountModules.Where(am => am.AccountId == account.Id && am.ModuleId == module.Id).FirstOrDefaultAsync();
-
-                if (accountModule != null)
-                {
-                    return accountModule;
-                }
-
-                throw new Exception("Can not access this module");
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
         }
 
         public async Task<Account> GetAccountByAccountIdAsync(long accountId)

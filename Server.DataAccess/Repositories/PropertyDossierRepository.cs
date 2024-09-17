@@ -12,11 +12,11 @@ namespace Server.DataAccess.Repositories
             _db = db;
         }
 
-        public async Task<Document> CreateNewDoc(Module module, Account account, int roomNumber, string buildingName, string buildingAddress)
+        public async Task<Document> CreateNewDoc(Module module, long accountId, int roomNumber, string buildingName, string buildingAddress)
         {
             Document document = new()
             {
-                AccountId = account.Id,
+                AccountId = accountId,
                 ModuleId = module.Id,
                 Timestamp = DateTime.Now,
                 RoomNumber = roomNumber,

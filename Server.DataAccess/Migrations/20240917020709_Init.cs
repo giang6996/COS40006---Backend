@@ -14,39 +14,6 @@ namespace Server.DataAccess.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Accounts",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TenantId = table.Column<long>(type: "bigint", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Accounts", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Groups",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    GroupName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TenantId = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Groups", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Modules",
                 columns: table => new
                 {
@@ -87,7 +54,20 @@ namespace Server.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Urbans",
+                name: "Tenants",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tenants", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UrbanAreas",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
@@ -96,55 +76,138 @@ namespace Server.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Urbans", x => x.Id);
+                    table.PrimaryKey("PK_UrbanAreas", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "RefreshTokens",
+                name: "ModulePermission",
+                columns: table => new
+                {
+                    ModulesId = table.Column<long>(type: "bigint", nullable: false),
+                    PermissionsId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ModulePermission", x => new { x.ModulesId, x.PermissionsId });
+                    table.ForeignKey(
+                        name: "FK_ModulePermission_Modules_ModulesId",
+                        column: x => x.ModulesId,
+                        principalTable: "Modules",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ModulePermission_Permissions_PermissionsId",
+                        column: x => x.PermissionsId,
+                        principalTable: "Permissions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RolePermissions",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AccountId = table.Column<long>(type: "bigint", nullable: false),
-                    ExpirationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Revoked = table.Column<bool>(type: "bit", nullable: false)
+                    RoleId = table.Column<long>(type: "bigint", nullable: false),
+                    PermissionId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_RefreshTokens", x => x.Id);
+                    table.PrimaryKey("PK_RolePermissions", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_RefreshTokens_Accounts_AccountId",
-                        column: x => x.AccountId,
-                        principalTable: "Accounts",
+                        name: "FK_RolePermissions_Permissions_PermissionId",
+                        column: x => x.PermissionId,
+                        principalTable: "Permissions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_RolePermissions_Roles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Roles",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Accounts",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    TenantId = table.Column<long>(type: "bigint", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Accounts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Accounts_Tenants_TenantId",
+                        column: x => x.TenantId,
+                        principalTable: "Tenants",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Groups",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GroupName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TenantId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Groups", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Groups_Tenants_TenantId",
+                        column: x => x.TenantId,
+                        principalTable: "Tenants",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "AccountGroups",
+                name: "Buildings",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    AccountId = table.Column<long>(type: "bigint", nullable: false),
-                    GroupId = table.Column<long>(type: "bigint", nullable: false)
+                    TenantId = table.Column<long>(type: "bigint", nullable: false),
+                    UrbanId = table.Column<long>(type: "bigint", nullable: false),
+                    ModuleId = table.Column<long>(type: "bigint", nullable: false),
+                    NumberFloor = table.Column<int>(type: "int", nullable: false),
+                    BuildingName = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BuildingAddress = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AccountGroups", x => x.Id);
+                    table.PrimaryKey("PK_Buildings", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AccountGroups_Accounts_AccountId",
-                        column: x => x.AccountId,
-                        principalTable: "Accounts",
+                        name: "FK_Buildings_Modules_ModuleId",
+                        column: x => x.ModuleId,
+                        principalTable: "Modules",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_AccountGroups_Groups_GroupId",
-                        column: x => x.GroupId,
-                        principalTable: "Groups",
+                        name: "FK_Buildings_Tenants_TenantId",
+                        column: x => x.TenantId,
+                        principalTable: "Tenants",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Buildings_UrbanAreas_UrbanId",
+                        column: x => x.UrbanId,
+                        principalTable: "UrbanAreas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -169,6 +232,58 @@ namespace Server.DataAccess.Migrations
                         name: "FK_AccountModules_Modules_ModuleId",
                         column: x => x.ModuleId,
                         principalTable: "Modules",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AccountPermissions",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AccountId = table.Column<long>(type: "bigint", nullable: false),
+                    PermissionId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AccountPermissions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AccountPermissions_Accounts_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Accounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AccountPermissions_Permissions_PermissionId",
+                        column: x => x.PermissionId,
+                        principalTable: "Permissions",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AccountRoles",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AccountId = table.Column<long>(type: "bigint", nullable: false),
+                    RoleId = table.Column<long>(type: "bigint", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AccountRoles", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AccountRoles_Accounts_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Accounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AccountRoles_Roles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "Roles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -231,27 +346,49 @@ namespace Server.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AccountPermissions",
+                name: "RefreshTokens",
+                columns: table => new
+                {
+                    Id = table.Column<long>(type: "bigint", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AccountId = table.Column<long>(type: "bigint", nullable: false),
+                    ExpirationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Revoked = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RefreshTokens", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_RefreshTokens_Accounts_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Accounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AccountGroups",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     AccountId = table.Column<long>(type: "bigint", nullable: false),
-                    PermissionId = table.Column<long>(type: "bigint", nullable: false)
+                    GroupId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AccountPermissions", x => x.Id);
+                    table.PrimaryKey("PK_AccountGroups", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_AccountPermissions_Accounts_AccountId",
+                        name: "FK_AccountGroups_Accounts_AccountId",
                         column: x => x.AccountId,
                         principalTable: "Accounts",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AccountPermissions_Permissions_PermissionId",
-                        column: x => x.PermissionId,
-                        principalTable: "Permissions",
+                        name: "FK_AccountGroups_Groups_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "Groups",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -283,131 +420,22 @@ namespace Server.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ModulePermissions",
+                name: "Apartments",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ModuleId = table.Column<long>(type: "bigint", nullable: false),
-                    PermissionId = table.Column<long>(type: "bigint", nullable: false)
+                    BuildingId = table.Column<long>(type: "bigint", nullable: false),
+                    Available = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    RoomNumber = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ModulePermissions", x => x.Id);
+                    table.PrimaryKey("PK_Apartments", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ModulePermissions_Modules_ModuleId",
-                        column: x => x.ModuleId,
-                        principalTable: "Modules",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_ModulePermissions_Permissions_PermissionId",
-                        column: x => x.PermissionId,
-                        principalTable: "Permissions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AccountRoles",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AccountId = table.Column<long>(type: "bigint", nullable: false),
-                    RoleId = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AccountRoles", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AccountRoles_Accounts_AccountId",
-                        column: x => x.AccountId,
-                        principalTable: "Accounts",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_AccountRoles_Roles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "Roles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "RolePermissions",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleId = table.Column<long>(type: "bigint", nullable: false),
-                    PermissionId = table.Column<long>(type: "bigint", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RolePermissions", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_RolePermissions_Permissions_PermissionId",
-                        column: x => x.PermissionId,
-                        principalTable: "Permissions",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_RolePermissions_Roles_RoleId",
-                        column: x => x.RoleId,
-                        principalTable: "Roles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Buildings",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    TenantId = table.Column<long>(type: "bigint", nullable: false),
-                    UrbanId = table.Column<long>(type: "bigint", nullable: false),
-                    ModuleId = table.Column<long>(type: "bigint", nullable: false),
-                    NumberFloor = table.Column<int>(type: "int", nullable: false),
-                    BuildingName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BuildingAddress = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Buildings", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Buildings_Modules_ModuleId",
-                        column: x => x.ModuleId,
-                        principalTable: "Modules",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Buildings_Urbans_UrbanId",
-                        column: x => x.UrbanId,
-                        principalTable: "Urbans",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AccessTokens",
-                columns: table => new
-                {
-                    Id = table.Column<long>(type: "bigint", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RtId = table.Column<long>(type: "bigint", nullable: false),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ExpirationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Revoked = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AccessTokens", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AccessTokens_RefreshTokens_RtId",
-                        column: x => x.RtId,
-                        principalTable: "RefreshTokens",
+                        name: "FK_Apartments_Buildings_BuildingId",
+                        column: x => x.BuildingId,
+                        principalTable: "Buildings",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -462,22 +490,23 @@ namespace Server.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Apartments",
+                name: "AccessTokens",
                 columns: table => new
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    BuildingId = table.Column<long>(type: "bigint", nullable: false),
-                    Available = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    RoomNumber = table.Column<int>(type: "int", nullable: false)
+                    RtId = table.Column<long>(type: "bigint", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ExpirationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Revoked = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Apartments", x => x.Id);
+                    table.PrimaryKey("PK_AccessTokens", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Apartments_Buildings_BuildingId",
-                        column: x => x.BuildingId,
-                        principalTable: "Buildings",
+                        name: "FK_AccessTokens_RefreshTokens_RtId",
+                        column: x => x.RtId,
+                        principalTable: "RefreshTokens",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -565,7 +594,14 @@ namespace Server.DataAccess.Migrations
                     { 11L, "UpdateForm" },
                     { 12L, "DeleteForm" },
                     { 13L, "ReadAllNewResidentRequest" },
-                    { 14L, "UpdateNewResidentRequest" }
+                    { 14L, "UpdateNewResidentRequest" },
+                    { 15L, "CanViewAllForms" },
+                    { 16L, "CanViewTenantForms" },
+                    { 17L, "CanViewOwnForms" },
+                    { 18L, "CreateGroup" },
+                    { 19L, "ReadGroup" },
+                    { 20L, "UpdateGroup" },
+                    { 21L, "DeleteGroup" }
                 });
 
             migrationBuilder.InsertData(
@@ -578,20 +614,27 @@ namespace Server.DataAccess.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "RolePermissions",
-                columns: new[] { "Id", "PermissionId", "RoleId" },
+                table: "Tenants",
+                columns: new[] { "Id", "Name" },
                 values: new object[,]
                 {
-                    { 3L, 13L, 1L },
-                    { 4L, 14L, 1L },
-                    { 5L, 5L, 2L },
-                    { 6L, 6L, 2L },
-                    { 7L, 7L, 2L },
-                    { 8L, 8L, 2L },
-                    { 9L, 9L, 2L },
-                    { 10L, 10L, 2L },
-                    { 11L, 11L, 2L },
-                    { 12L, 12L, 2L }
+                    { 1L, "Google" },
+                    { 2L, "Apple" },
+                    { 3L, "Microsoft" },
+                    { 4L, "Facebook" },
+                    { 5L, "Amazon" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Accounts",
+                columns: new[] { "Id", "Email", "FirstName", "LastName", "Password", "PhoneNumber", "Status", "TenantId" },
+                values: new object[,]
+                {
+                    { 1L, "test001@gmail.com", "test", "001", "$2a$11$eaCV0/gsB6YuF3e86QZ2CeUAb2dK7L1rSfuNxNiVPyGpkEVqzj6s.", null, "Active", 1L },
+                    { 2L, "test002@gmail.com", "test", "002", "$2a$11$eaCV0/gsB6YuF3e86QZ2CeUAb2dK7L1rSfuNxNiVPyGpkEVqzj6s.", null, "Pending", 1L },
+                    { 3L, "test003@gmail.com", "test", "003", "$2a$11$eaCV0/gsB6YuF3e86QZ2CeUAb2dK7L1rSfuNxNiVPyGpkEVqzj6s.", null, "Pending", 2L },
+                    { 4L, "test004@gmail.com", "test", "004", "$2a$11$eaCV0/gsB6YuF3e86QZ2CeUAb2dK7L1rSfuNxNiVPyGpkEVqzj6s.", null, "Pending", 3L },
+                    { 5L, "test005@gmail.com", "test", "005", "$2a$11$eaCV0/gsB6YuF3e86QZ2CeUAb2dK7L1rSfuNxNiVPyGpkEVqzj6s.", null, "Pending", 5L }
                 });
 
             migrationBuilder.CreateIndex(
@@ -640,6 +683,11 @@ namespace Server.DataAccess.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Accounts_TenantId",
+                table: "Accounts",
+                column: "TenantId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ApartmentDetails_ApartmentId",
                 table: "ApartmentDetails",
                 column: "ApartmentId",
@@ -654,6 +702,11 @@ namespace Server.DataAccess.Migrations
                 name: "IX_Buildings_ModuleId",
                 table: "Buildings",
                 column: "ModuleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Buildings_TenantId",
+                table: "Buildings",
+                column: "TenantId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Buildings_UrbanId",
@@ -701,14 +754,14 @@ namespace Server.DataAccess.Migrations
                 column: "PermissionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ModulePermissions_ModuleId",
-                table: "ModulePermissions",
-                column: "ModuleId");
+                name: "IX_Groups_TenantId",
+                table: "Groups",
+                column: "TenantId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ModulePermissions_PermissionId",
-                table: "ModulePermissions",
-                column: "PermissionId");
+                name: "IX_ModulePermission_PermissionsId",
+                table: "ModulePermission",
+                column: "PermissionsId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RefreshTokens_AccountId",
@@ -773,7 +826,7 @@ namespace Server.DataAccess.Migrations
                 name: "GroupPermissions");
 
             migrationBuilder.DropTable(
-                name: "ModulePermissions");
+                name: "ModulePermission");
 
             migrationBuilder.DropTable(
                 name: "Residents");
@@ -812,7 +865,10 @@ namespace Server.DataAccess.Migrations
                 name: "Modules");
 
             migrationBuilder.DropTable(
-                name: "Urbans");
+                name: "Tenants");
+
+            migrationBuilder.DropTable(
+                name: "UrbanAreas");
         }
     }
 }

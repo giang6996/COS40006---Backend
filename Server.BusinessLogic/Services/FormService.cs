@@ -23,29 +23,18 @@ namespace Server.BusinessLogic.Services
             _authorizeRepository = authorizeRepository;
         }
 
-        public async Task HandleAdminResponse(string accessToken, long id, string response, string status)
+        public async Task HandleAdminResponse(long id, string response, string status)
         {
             try
             {
-                Account account = await _authLibraryService.FetchAccount(accessToken);
-                Common.Models.Role role = await _authorizeRepository.FetchRoleFromAccount(account);
-
-                if (role.Name == Common.Enums.Role.Admin.ToString())
+                if (Enum.TryParse(status, out FormStatus statusParsed))
                 {
-                    if (Enum.TryParse(status, out FormStatus statusParsed))
-                    {
-                        await _formRepository.UpdateFormResponse(id, response, status);
-                    }
-                    else
-                    {
-                        throw new ArgumentException("Given status not valid");
-                    }
+                    await _formRepository.UpdateFormResponse(id, response, status);
                 }
                 else
                 {
-                    throw new Exception("You not have permission");
+                    throw new ArgumentException("Given status not valid");
                 }
-
             }
             catch (System.Exception)
             {
@@ -85,20 +74,18 @@ namespace Server.BusinessLogic.Services
         {
             try
             {
-                Account account = await _authLibraryService.FetchAccount(accessToken);
+                long accountId = (long)Convert.ToDouble(_authLibraryService.GetClaimValue(ClaimTypes.NameIdentifier, accessToken));
                 Common.Models.Module module = await _moduleRepository.GetModuleByModuleName(Common.Enums.Module.Form);
 
                 FormResidentRequest formResidentRequest = new()
                 {
-                    AccountId = account.Id,
+                    AccountId = accountId,
                     ModuleId = module.Id,
                     Timestamp = DateTime.Now
                 };
                 await _formRepository.AddNewFormAsync(formResidentRequest);
 
-                bool parseLabelState = Enum.TryParse(request.Label, out FormLabel formLabel);
-                bool parseTypeState = Enum.TryParse(request.Type, out FormType formType);
-                if (!parseTypeState)
+                if (!Enum.TryParse(request.Type, out FormType formType))
                     throw new Exception("Form Type not found");
 
                 FormResidentRequestDetail formResidentRequestDetail = new()
@@ -106,7 +93,7 @@ namespace Server.BusinessLogic.Services
                     FormResidentRequestId = formResidentRequest.Id,
                     Title = request.Title,
                     Type = formType.ToString(),
-                    Label = parseLabelState ? formLabel.ToString() : FormLabel.Other.ToString(),
+                    Label = Enum.TryParse(request.Label, out FormLabel formLabel) ? formLabel.ToString() : FormLabel.Other.ToString(),
                     Description = request.Description,
                     Status = FormStatus.Submitted.ToString(),
                     RequestMediaLink = request.RequestMediaLink
@@ -115,7 +102,6 @@ namespace Server.BusinessLogic.Services
             }
             catch (System.Exception)
             {
-
                 throw;
             }
         }

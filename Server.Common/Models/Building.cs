@@ -16,5 +16,6 @@ namespace Server.Common.Models
         public Module Module { get; set; } = null!;
         public Urban Urban { get; set; } = null!;
         public List<Apartment> Apartments { get; } = new();
+        public Tenant Tenant { get; set; } = null!;
     }
 }

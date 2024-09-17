@@ -13,58 +13,63 @@ namespace Server.DataAccess.Repositories
 
         public FileRepository(IConfiguration configuration, AppDbContext db)
         {
-            var uploadFolder = configuration["UploadFolder"] ?? "UploadedFiles";
+            var uploadFolder = configuration["UploadFolder"] ?? throw new Exception("UploadFolder configuration string is not valid");
             _uploadFolder = Path.Combine(System.Environment.CurrentDirectory, uploadFolder);
-
-            if (!Directory.Exists(_uploadFolder))
-            {
-                Directory.CreateDirectory(_uploadFolder);
-            }
-
             _db = db;
         }
 
-        public async Task<bool> SaveFilesAsync(List<IFormFile> files, Account account, Document document)
+        public async Task<bool> SaveFilesAsync(List<IFormFile> files, long accountId, Document document)
         {
             if (files == null || files.Count == 0)
-                throw new ArgumentException("No files provided");
+                return false;
 
-            var filePath = Path.Combine(_uploadFolder, account.Email);
-            if (!Directory.Exists(filePath))
-            {
-                Directory.CreateDirectory(filePath);
-            }
+            var filePath = Path.Combine(_uploadFolder, accountId.ToString());
+            Directory.CreateDirectory(filePath); // Create directory if not exists
 
-            int docCount = 0;
-            List<DocumentDetail> documentDetailsList = new();
+            var documentDetailsList = new List<DocumentDetail>();
+            var tasks = new List<Task>();
+
             foreach (var formFile in files)
             {
                 if (formFile.Length > 0)
                 {
-                    var uniqueKey = Guid.NewGuid().ToString();
-                    var extension = Path.GetExtension(formFile.FileName);
-                    var newFileName = uniqueKey + extension;
+                    var uniqueFileName = GenerateUniqueFileName(formFile.FileName);
+                    var newFilePath = Path.Combine(filePath, uniqueFileName);
 
-                    var newFilePath = Path.Combine(filePath, newFileName);
+                    // Task to copy file
+                    var copyTask = CopyFileAsync(formFile, newFilePath);
+                    tasks.Add(copyTask);
 
-                    using var stream = new FileStream(newFilePath, FileMode.Create);
-                    await formFile.CopyToAsync(stream);
-
-                    docCount++;
-                    DocumentDetail dt = new()
+                    // Create DocumentDetail
+                    documentDetailsList.Add(new DocumentDetail
                     {
                         DocumentId = document.Id,
-                        Name = $"Document {docCount}",
+                        Name = $"Document {documentDetailsList.Count + 1}", // Incrementing based on the list
                         Status = DocumentStatus.Pending.ToString(),
-                        DocumentLink = Path.Combine(account.Email, newFileName)
-                    };
-                    documentDetailsList.Add(dt);
+                        DocumentLink = Path.Combine(accountId.ToString(), uniqueFileName)
+                    });
                 }
             }
+
+            await Task.WhenAll(tasks); // Wait for all file operations to complete
             await _db.AddRangeAsync(documentDetailsList);
             await _db.SaveChangesAsync();
 
             return true;
+        }
+
+        // Helper methods
+        private static string GenerateUniqueFileName(string originalFileName)
+        {
+            var uniqueKey = Guid.NewGuid().ToString();
+            var extension = Path.GetExtension(originalFileName);
+            return uniqueKey + extension;
+        }
+
+        private static async Task CopyFileAsync(IFormFile formFile, string filePath)
+        {
+            using var stream = new FileStream(filePath, FileMode.Create);
+            await formFile.CopyToAsync(stream);
         }
     }
 }

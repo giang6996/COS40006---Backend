@@ -40,12 +40,5 @@ namespace Server.Presentation.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
-
-        [HttpGet("test")]
-        [CustomAuthorize(Common.Enums.Permission.CreatePropertyDossier)]
-        public IActionResult Test()
-        {
-            return Ok("ha ha");
-        }
     }
 }

@@ -80,19 +80,13 @@ namespace Server.Presentation.Controllers
         }
 
         [HttpPost("admin-response")]
+        [CustomAuthorize(Permission.UpdateForm)]
         public async Task<IActionResult> UpdateRequest([FromQuery] long id, [FromBody] FormUpdate request)
         {
             try
             {
-                var authorizationHeader = Request.Headers[HeaderNames.Authorization];
-                if (authorizationHeader.ToString().StartsWith("Bearer"))
-                {
-                    var accessToken = authorizationHeader.ToString()["Bearer ".Length..].Trim();
-                    await _formService.HandleAdminResponse(accessToken, id, request.Response, request.Status);
-                    return Ok();
-                }
-
-                throw new Exception("Unexpected Error");
+                await _formService.HandleAdminResponse(id, request.Response, request.Status);
+                return Ok();
             }
             catch (System.Exception)
             {

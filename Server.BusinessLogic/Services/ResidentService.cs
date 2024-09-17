@@ -8,132 +8,109 @@ namespace Server.BusinessLogic.Services
 {
     public class ResidentService : IResidentService
     {
-        private readonly IAuthLibraryService _authLibraryService;
-        private readonly IAuthorizeRepository _authorizeRepository;
         private readonly IResidentRepository _residentRepository;
         private readonly IDocRepository _docRepository;
         private readonly IAccountRepository _accountRepository;
 
-        public ResidentService(IAuthLibraryService authLibraryService, IAuthorizeRepository authorizeRepository, IResidentRepository residentRepository, IDocRepository docRepository, IAccountRepository accountRepository)
+        public ResidentService(IResidentRepository residentRepository, IDocRepository docRepository, IAccountRepository accountRepository)
         {
-            _authLibraryService = authLibraryService;
-            _authorizeRepository = authorizeRepository;
             _residentRepository = residentRepository;
             _docRepository = docRepository;
             _accountRepository = accountRepository;
         }
 
-        public async Task<List<NewResidentResponse>> GetAllNewResidentRequest(string accessToken)
+        public async Task<List<NewResidentResponse>> GetAllNewResidentRequest()
         {
             try
             {
-                Account account = await _authLibraryService.FetchAccount(accessToken);
-                if (await _authorizeRepository.VerifyModulePermission(account, Common.Enums.Role.Admin, Common.Enums.Permission.ReadAllNewResidentRequest))
+                List<NewResidentResponse> newResidentResponsesList = new();
+                List<Account> accounts = await _residentRepository.FetchAllNewAccountsWithDocsSubmitted();
+
+                foreach (var a in accounts)
                 {
-                    List<NewResidentResponse> newResidentResponsesList = new();
-                    List<Account> accounts = await _residentRepository.FetchAllNewAccountsWithDocsSubmitted();
-
-                    foreach (var a in accounts)
+                    NewResidentResponse newResidentResponse = new()
                     {
-                        NewResidentResponse newResidentResponse = new()
-                        {
-                            FullName = a.FirstName + a.LastName,
-                            Email = a.Email
-                        };
-
-                        newResidentResponsesList.Add(newResidentResponse);
-                    }
-
-                    return newResidentResponsesList;
-                }
-
-                throw new Exception("No permission");
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
-        }
-
-        public async Task<DetailsNewResidentResponse> GetDetailsNewResident(string accessToken, string residentEmail)
-        {
-            try
-            {
-                Account account = await _authLibraryService.FetchAccount(accessToken);
-                if (await _authorizeRepository.VerifyModulePermission(account, Common.Enums.Role.Admin, Common.Enums.Permission.ReadAllNewResidentRequest))
-                {
-                    Account newAccount = await _accountRepository.GetAccountByEmailAsync(residentEmail) ?? throw new Exception("Invalid email request");
-                    Document document = await _docRepository.GetLastDoc(newAccount);
-                    List<DocumentDetail> documentDetailsList = await _docRepository.GetDocDetails(document);
-                    List<Server.Models.DTOs.Document.DocumentDetails> newDocumentDetailsList = new();
-
-                    foreach (var documentDetails in documentDetailsList)
-                    {
-                        newDocumentDetailsList.Add(new()
-                        {
-                            Id = documentDetails.Id,
-                            Name = documentDetails.Name,
-                            DocumentDesc = documentDetails.DocumentDesc,
-                            Status = documentDetails.Status,
-                            DocumentLink = documentDetails.DocumentLink
-                        });
-                    }
-
-                    DetailsNewResidentResponse detailsNewResidentResponse = new()
-                    {
-                        AccountId = newAccount.Id,
-                        FirstName = newAccount.FirstName,
-                        LastName = newAccount.LastName,
-                        Email = newAccount.Email,
-                        PhoneNumber = newAccount.PhoneNumber,
-                        AccountStatus = newAccount.Status,
-                        RoomNumber = document.RoomNumber,
-                        BuildingName = document.BuildingName,
-                        BuildingAddress = document.BuildingAddress,
-                        Timestamp = document.Timestamp,
-                        DocumentDetailsList = newDocumentDetailsList
+                        FullName = a.FirstName + a.LastName,
+                        Email = a.Email
                     };
 
-                    return detailsNewResidentResponse;
+                    newResidentResponsesList.Add(newResidentResponse);
                 }
 
-                throw new Exception("No permission");
+                return newResidentResponsesList;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw new Exception(ex.Message);
+                throw;
             }
         }
 
-        public async Task UpdateAccountStatus(string accessToken, long accountId, string status)
+        public async Task<DetailsNewResidentResponse> GetDetailsNewResident(string residentEmail)
         {
             try
             {
-                Account account = await _authLibraryService.FetchAccount(accessToken);
-                if (await _authorizeRepository.VerifyModulePermission(account, Common.Enums.Role.Admin, Common.Enums.Permission.UpdateNewResidentRequest))
+                Account newAccount = await _accountRepository.GetAccountByEmailAsync(residentEmail) ?? throw new Exception("Invalid email request");
+                Document document = await _docRepository.GetLastDoc(newAccount);
+                List<DocumentDetail> documentDetailsList = await _docRepository.GetDocDetails(document);
+                List<Server.Models.DTOs.Document.DocumentDetails> newDocumentDetailsList = new();
+
+                foreach (var documentDetails in documentDetailsList)
                 {
-                    Account residentAccount = await _accountRepository.GetAccountByAccountIdAsync(accountId);
-                    Document document = await _docRepository.GetDocumentByAccountId(accountId);
-                    if (document != null && residentAccount != null)
+                    newDocumentDetailsList.Add(new()
                     {
-                        // Try to parse the status
-                        if (Enum.TryParse<Common.Enums.AccountStatus>(status, true, out var parsedStatus))
-                        {
-                            await _accountRepository.UpdateAccountStatus(residentAccount, parsedStatus);
-                            return;
-                        }
-                        else
-                        {
-                            throw new ArgumentException("Invalid account status");
-                        }
-                    }
+                        Id = documentDetails.Id,
+                        Name = documentDetails.Name,
+                        DocumentDesc = documentDetails.DocumentDesc,
+                        Status = documentDetails.Status,
+                        DocumentLink = documentDetails.DocumentLink
+                    });
                 }
 
-                throw new Exception("No permission");
+                DetailsNewResidentResponse detailsNewResidentResponse = new()
+                {
+                    AccountId = newAccount.Id,
+                    FirstName = newAccount.FirstName,
+                    LastName = newAccount.LastName,
+                    Email = newAccount.Email,
+                    PhoneNumber = newAccount.PhoneNumber,
+                    AccountStatus = newAccount.Status,
+                    RoomNumber = document.RoomNumber,
+                    BuildingName = document.BuildingName,
+                    BuildingAddress = document.BuildingAddress,
+                    Timestamp = document.Timestamp,
+                    DocumentDetailsList = newDocumentDetailsList
+                };
+
+                return detailsNewResidentResponse;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw new Exception(ex.Message);
+                throw;
+            }
+        }
+
+        public async Task UpdateAccountStatus(long accountId, string status)
+        {
+            try
+            {
+                Account residentAccount = await _accountRepository.GetAccountByAccountIdAsync(accountId);
+                Document document = await _docRepository.GetDocumentByAccountId(accountId);
+                if (document != null && residentAccount != null)
+                {
+                    if (Enum.TryParse<Common.Enums.AccountStatus>(status, true, out var parsedStatus))
+                    {
+                        await _accountRepository.UpdateAccountStatus(residentAccount, parsedStatus);
+                        return;
+                    }
+                    else
+                    {
+                        throw new ArgumentException("Invalid account status");
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                throw;
             }
         }
     }
