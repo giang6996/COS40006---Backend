@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  mssql-db:
+    image: "mcr.microsoft.com/mssql/server:2022-latest"
+    container_name: mssql-db
+    environment:
+      - SA_PASSWORD=2003@Abcz32
+      - ACCEPT_EULA=Y
+    ports:
+      - "1434:1433"
+    networks:
+      - app-network
+    volumes:
+      - /var/mssql-data:/var/opt/mssql
+
+  webapi:
+    # image: nnguyenhoangann/cos40005-web-api:latest
+    build: 
+      context: .
+    container_name: webapi
+    ports:
+      - "8000:80"
+    networks:
+      - app-network
+    depends_on:
+      - mssql-db
+    environment:
+      - ConnectionStrings__DefaultConnection=Server=mssql-db;Database=COS40005;User Id=SA;Password=2003@Abcz32;TrustServerCertificate=True;
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mssql-data:

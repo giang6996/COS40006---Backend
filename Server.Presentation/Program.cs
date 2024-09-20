@@ -99,4 +99,11 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    dbContext.Database.Migrate(); // Applies any pending migrations
+}
+
+
 app.Run();
