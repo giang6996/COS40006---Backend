@@ -1,5 +1,4 @@
 using System.Text;
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -8,6 +7,7 @@ using Server.BusinessLogic.Services;
 using Server.DataAccess;
 using Server.DataAccess.Interfaces;
 using Server.DataAccess.Repositories;
+using Server.Presentation.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -53,16 +53,12 @@ builder.Services.AddCors(options =>
             );
     });
 
-// builder.Services.AddControllers().AddJsonOptions(options =>
-// {
-//     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
-//     options.JsonSerializerOptions.WriteIndented = true;
-// });
-
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddSignalR();
 
 builder.Services.AddScoped<IAuthLibraryService, AuthLibraryService>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
@@ -92,12 +88,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("CorsPolicy");
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<FailDetectionHub>("/api/fail-detection-hub");
 
 using (var scope = app.Services.CreateScope())
 {
