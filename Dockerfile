@@ -2,6 +2,10 @@
 FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS base
 WORKDIR /app
 EXPOSE 80
+EXPOSE 443
+
+# Use for heathy check
+RUN apt-get update && apt-get install -y curl
 
 # Stage 2: Build the app
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
@@ -31,6 +35,9 @@ RUN dotnet publish "Server.Presentation/Server.Presentation.csproj" -c Release -
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+
+# Copy the self-signed certificate into the container
+COPY aspnetapp.pfx /https/aspnetapp.pfx
 
 # Specify the entry point to run the app
 ENTRYPOINT ["dotnet", "Server.Presentation.dll"]
