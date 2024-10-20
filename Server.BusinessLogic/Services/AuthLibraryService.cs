@@ -26,14 +26,23 @@ namespace Server.BusinessLogic.Services
 
         public object Generate(Account account, bool includeRefreshToken = true)
         {
+            // Get roles from the account (AccountRoles table)
+            var roles = account.AccountRoles.Select(ar => ar.Role.Name).ToList();
+
             // Create the claims for the JWT
-            var claims = new[]
+            var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Email, account.Email),
                 new Claim(ClaimTypes.Name, account.Email),
                 new Claim(ClaimTypes.NameIdentifier, account.Id.ToString()),
-                //new Claim(ClaimTypes.Role, "Admin")
+                // For testing 
+                //new Claim(ClaimTypes.Role, "Resident") 
             };
+
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
 
             // Get the secret key from the appsettings.json file
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtBearer:Key"] ?? throw new Exception("Unexpected Error")));

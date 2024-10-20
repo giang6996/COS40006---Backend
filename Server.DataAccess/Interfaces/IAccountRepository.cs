@@ -9,6 +9,7 @@ namespace Server.DataAccess.Interfaces
         Task AddAccountAsync(Account account);
         Task<Account?> GetAccountByEmailAsync(string email);
         Task<Account> GetAccountByAccountIdAsync(long accountId);
+        Task<List<Account>> GetAllAccountsAsync();
         Task UpdateAccountStatus(Account account, Server.Common.Enums.AccountStatus accountStatus);
     }
 }

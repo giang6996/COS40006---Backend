@@ -4,6 +4,7 @@ using Server.DataAccess.Interfaces;
 using Server.Models.ResponseModels;
 using Server.Models.DTOs.Account;
 using Server.Common.Enums;
+using System.Data;
 
 namespace Server.BusinessLogic.Services
 {
@@ -38,6 +39,7 @@ namespace Server.BusinessLogic.Services
                 Password = passwordHashed,
                 Email = request.Email,
                 PhoneNumber = request.PhoneNumber,
+                TenantId = 1, // FOR TESTING ONLY!!!
                 Status = accountCount == 0 ? AccountStatus.Active.ToString() : AccountStatus.Pending.ToString()
             };
 
@@ -133,5 +135,50 @@ namespace Server.BusinessLogic.Services
 
             return accountDTO;
         }
+
+        public async Task<AccountDTO> GetAccountByIdAsync(long accountId)
+        {
+            // Fetch the account by its ID
+            Account? account = await _accountRepository.GetAccountByAccountIdAsync(accountId);
+            if (account == null)
+            {
+                throw new Exception("Account not found");
+            }
+
+            var roles = account.AccountRoles.Select(ar => ar.Role.Name).ToList();
+
+            // Map the account to AccountDTO
+            AccountDTO accountDTO = new()
+            {
+                Id = account.Id,
+                TenantId = account.TenantId,
+                FirstName = account.FirstName,
+                LastName = account.LastName,
+                Email = account.Email,
+                PhoneNumber = account.PhoneNumber,
+                Status = account.Status,
+                Roles = roles // Return the list of roles for this account
+            };
+
+            return accountDTO;
+        }
+
+        public async Task<List<AccountDTO>> GetAllAccountsAsync()
+        {
+            var accounts = await _accountRepository.GetAllAccountsAsync();
+            var accountDTOs = accounts.Select(account => new AccountDTO
+            {
+                Id = account.Id,
+                FirstName = account.FirstName,
+                LastName = account.LastName,
+                Email = account.Email,
+                PhoneNumber = account.PhoneNumber,
+                Status = account.Status,
+                Roles = account.AccountRoles.Select(ar => ar.Role.Name).ToList()  // Fetch roles
+            }).ToList();
+
+            return accountDTOs;
+        }
+
     }
 }

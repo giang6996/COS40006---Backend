@@ -69,41 +69,79 @@ namespace Server.BusinessLogic.Services
                 throw;
             }
         }
+        public async Task<List<FormResponse>> HandleGetUserComplaints(string accessToken, string? status, string? label, string? type)
+        {
+            try
+            {
+                // Extract accountId from the access token
+                long accountId = (long)Convert.ToDouble(_authLibraryService.GetClaimValue(ClaimTypes.NameIdentifier, accessToken));
+
+                // Call the repository method to fetch only the user's complaints
+                List<FormResponse> formResponses = await _formRepository.GetAllOwnForms(accountId, status, label, type);
+
+                return formResponses;
+            }
+            catch (System.Exception ex)
+            {
+                throw new Exception("Failed to fetch user complaints", ex);
+            }
+        }
+
+        public async Task<FormResponse> GetRequestDetail(long id)
+        {
+            try
+            {
+                // Call the repository method to fetch the form request details
+                FormResponse formResponse = await _formRepository.GetFormRequestDetail(id);
+                return formResponse;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error while retrieving form request details", ex);
+            }
+        }
 
         public async Task HandleNewRequest(Models.DTOs.Form.FormResidentRequest request, string accessToken)
         {
             try
             {
+                // Extract the accountId from the access token
                 long accountId = (long)Convert.ToDouble(_authLibraryService.GetClaimValue(ClaimTypes.NameIdentifier, accessToken));
+
+                // Get the module associated with Form
                 Common.Models.Module module = await _moduleRepository.GetModuleByModuleName(Common.Enums.Module.Form);
 
+                // Create a new FormResidentRequest object
                 FormResidentRequest formResidentRequest = new()
                 {
                     AccountId = accountId,
                     ModuleId = module.Id,
                     Timestamp = DateTime.Now
                 };
+
+                // Save the new form request (without details)
                 await _formRepository.AddNewFormAsync(formResidentRequest);
 
-                if (!Enum.TryParse(request.Type, out FormType formType))
-                    throw new Exception("Form Type not found");
-
+                // Create the FormResidentRequestDetail with a default "In-Process" status
                 FormResidentRequestDetail formResidentRequestDetail = new()
                 {
                     FormResidentRequestId = formResidentRequest.Id,
                     Title = request.Title,
-                    Type = formType.ToString(),
+                    Type = Enum.TryParse(request.Type, out FormType formType) ? formType.ToString() : throw new Exception("Invalid Form Type"),
                     Label = Enum.TryParse(request.Label, out FormLabel formLabel) ? formLabel.ToString() : FormLabel.Other.ToString(),
                     Description = request.Description,
-                    Status = FormStatus.Submitted.ToString(),
+                    Status = FormStatus.Await.ToString(), // Automatically set to "Await"
                     RequestMediaLink = request.RequestMediaLink
                 };
+
+                // Save the form details
                 await _formRepository.AddNewFormDetailAsync(formResidentRequestDetail);
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
-                throw;
+                throw new Exception("Error creating new request", ex);
             }
         }
+
     }
 }

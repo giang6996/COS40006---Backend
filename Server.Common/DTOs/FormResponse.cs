@@ -10,5 +10,7 @@ namespace Server.Common.DTOs
         public required string Label { get; set; }
         public required string Type { get; set; }
         public DateTime CreateAt { get; set; }
+
+        public string? Response { get; set; }
     }
 }

@@ -16,6 +16,7 @@ namespace Server.Common.Models
         public string? PhoneNumber { get; set; }
         public string? Status { get; set; }
 
+        public List<AccountRole> AccountRoles { get; } = new();
         public List<Module> Modules { get; } = new();
         public List<Document> Documents { get; } = new();
         public List<FormResidentRequest> FormResidentRequests { get; } = new();

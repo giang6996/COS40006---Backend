@@ -26,12 +26,27 @@ namespace Server.DataAccess.Repositories
 
         public async Task<Account?> GetAccountByEmailAsync(string email)
         {
-            return await _db.Accounts.Where(a => a.Email == email).FirstOrDefaultAsync();
+            return await _db.Accounts
+                .Include(a => a.AccountRoles) // Include AccountRoles linking Account to Roles
+                .ThenInclude(ar => ar.Role)   // Include Role from AccountRole
+                .Where(a => a.Email == email)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<Account> GetAccountByAccountIdAsync(long accountId)
         {
-            return await _db.Accounts.Where(a => a.Id == accountId).FirstOrDefaultAsync() ?? throw new Exception("Account not found");
+            return await _db.Accounts
+                .Include(a => a.AccountRoles) // Include AccountRoles linking Account to Roles
+                .ThenInclude(ar => ar.Role)
+                .Where(a => a.Id == accountId).
+                FirstOrDefaultAsync() ?? throw new Exception("Account not found");
+        }
+        public async Task<List<Account>> GetAllAccountsAsync()
+        {
+            return await _db.Accounts
+                .Include(a => a.AccountRoles)  // Include roles
+                .ThenInclude(ar => ar.Role)
+                .ToListAsync();
         }
 
         public async Task UpdateAccountStatus(Account account, Common.Enums.AccountStatus accountStatus)

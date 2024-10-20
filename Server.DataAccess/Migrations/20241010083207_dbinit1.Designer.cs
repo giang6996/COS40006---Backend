@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Server.DataAccess;
 
@@ -11,9 +12,11 @@ using Server.DataAccess;
 namespace Server.DataAccess.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241010083207_dbinit1")]
+    partial class dbinit1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -929,21 +932,17 @@ namespace Server.DataAccess.Migrations
 
             modelBuilder.Entity("Server.Common.Models.AccountRole", b =>
                 {
-                    b.HasOne("Server.Common.Models.Account", "Account")
-                        .WithMany("AccountRoles")
+                    b.HasOne("Server.Common.Models.Account", null)
+                        .WithMany()
                         .HasForeignKey("AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Server.Common.Models.Role", "Role")
+                    b.HasOne("Server.Common.Models.Role", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Account");
-
-                    b.Navigation("Role");
                 });
 
             modelBuilder.Entity("Server.Common.Models.Apartment", b =>
@@ -1136,8 +1135,6 @@ namespace Server.DataAccess.Migrations
 
             modelBuilder.Entity("Server.Common.Models.Account", b =>
                 {
-                    b.Navigation("AccountRoles");
-
                     b.Navigation("Documents");
 
                     b.Navigation("FormResidentRequests");

@@ -8,5 +8,7 @@ namespace Server.BusinessLogic.Interfaces
         Task<Token> RegisterAsync(RegisterRequest request);
         Task<Token> LoginAsync(LoginRequest request);
         Task<AccountDTO> GetAccountInfos(string accessToken);
+        Task<AccountDTO> GetAccountByIdAsync(long accountId);
+        Task<List<AccountDTO>> GetAllAccountsAsync();
     }
 }

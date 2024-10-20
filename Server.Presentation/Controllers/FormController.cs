@@ -73,10 +73,49 @@ namespace Server.Presentation.Controllers
             }
         }
 
-        [HttpGet("get-detail")]
-        public IActionResult GetRequestDetail([FromQuery] long id)
+        [HttpGet("get-user-complaints")]
+        [Authorize] // Ensures only authenticated users can access this
+        public async Task<IActionResult> GetUserComplaints([FromQuery] string? status, string? label, string? type)
         {
-            return Ok(id.ToString());
+            try
+            {
+                var authorizationHeader = Request.Headers[HeaderNames.Authorization];
+                if (authorizationHeader.ToString().StartsWith("Bearer"))
+                {
+                    var accessToken = authorizationHeader.ToString()["Bearer ".Length..].Trim();
+                    // Fetch complaints only for the current user
+                    List<FormResponse> formResponses = await _formService.HandleGetUserComplaints(accessToken, status, label, type);
+
+                    return Ok(formResponses);
+                }
+
+                throw new Exception("Unexpected Error");
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpGet("get-detail")]
+        public async Task<IActionResult> GetRequestDetail([FromQuery] long id)
+        {
+            try
+            {
+                // Call the service to get the request details
+                var formDetailResponse = await _formService.GetRequestDetail(id);
+
+                if (formDetailResponse == null)
+                {
+                    return NotFound("Complaint not found");
+                }
+
+                return Ok(formDetailResponse);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, $"Error retrieving complaint detail: {ex.Message}");
+            }
         }
 
         [HttpPost("admin-response")]
