@@ -44,6 +44,29 @@ namespace Server.Presentation.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPost("register-resident")]
+        public async Task<IActionResult> RegisterResident([FromForm] ResidentRegistrationDto registrationDto)
+        {
+            if (registrationDto == null)
+            {
+                return BadRequest(new { message = "Invalid resident registration request." });
+            }
+
+            try
+            {
+                await _accountService.RegisterResidentWithDocumentsAsync(registrationDto);
+                return Ok(new { message = "Registration submitted successfully. Awaiting admin approval." });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred during registration.", details = ex.Message });
+            }
+        }
     }
 }
 

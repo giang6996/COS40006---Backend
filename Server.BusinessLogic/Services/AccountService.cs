@@ -14,13 +14,15 @@ namespace Server.BusinessLogic.Services
         private readonly IAccountRepository _accountRepository;
         private readonly ITokenRepository _tokenRepository;
         private readonly IAuthorizeRepository _authorizeRepository;
+        private readonly IPropertyDossierService _propertyDossierService;
 
-        public AccountService(IAuthLibraryService authLibraryService, IAccountRepository accountRepository, ITokenRepository tokenRepository, IAuthorizeRepository authorizeRepository)
+        public AccountService(IAuthLibraryService authLibraryService, IAccountRepository accountRepository, ITokenRepository tokenRepository, IAuthorizeRepository authorizeRepository, IPropertyDossierService propertyDossierService)
         {
             _authLibraryService = authLibraryService;
             _accountRepository = accountRepository;
             _tokenRepository = tokenRepository;
             _authorizeRepository = authorizeRepository;
+            _propertyDossierService = propertyDossierService;
         }
 
         public async Task<Token> RegisterAsync(RegisterRequest request)
@@ -40,11 +42,11 @@ namespace Server.BusinessLogic.Services
                 Email = request.Email,
                 PhoneNumber = request.PhoneNumber,
                 TenantId = 1, // FOR TESTING ONLY!!!
-                Status = accountCount == 0 ? AccountStatus.Active.ToString() : AccountStatus.Pending.ToString()
+                Status =  AccountStatus.Pending.ToString()
             };
 
             await _accountRepository.AddAccountAsync(account);
-            await _authorizeRepository.AssignAccountRole(account, accountCount == 0 ? Server.Common.Enums.Role.Admin : Common.Enums.Role.User);
+            await _authorizeRepository.AssignAccountRole(account, Common.Enums.Role.User);
 
             var token = _authLibraryService.Generate(account);
             if (token is (string at, string rt))
