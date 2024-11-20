@@ -27,8 +27,12 @@ namespace Server.DataAccess.Repositories
         public async Task<Account?> GetAccountByEmailAsync(string email)
         {
             return await _db.Accounts
-                .Include(a => a.AccountRoles) // Include AccountRoles linking Account to Roles
-                .ThenInclude(ar => ar.Role)   // Include Role from AccountRole
+                .Include(a => a.AccountRoles)
+                    .ThenInclude(ar => ar.Role)
+                .Include(a => a.Documents)
+                    .ThenInclude(d => d.Apartment)  // Include Apartment through Documents
+                .Include(a => a.Documents)
+                    .ThenInclude(d => d.Building)   // Include Building through Documents
                 .Where(a => a.Email == email)
                 .FirstOrDefaultAsync();
         }
@@ -36,17 +40,24 @@ namespace Server.DataAccess.Repositories
         public async Task<Account> GetAccountByAccountIdAsync(long accountId)
         {
             return await _db.Accounts
-                .Include(a => a.AccountRoles) // Include AccountRoles linking Account to Roles
-                .ThenInclude(ar => ar.Role)
-                .Where(a => a.Id == accountId).
-                FirstOrDefaultAsync() ?? throw new Exception("Account not found");
+                .Include(a => a.AccountRoles)
+                    .ThenInclude(ar => ar.Role)
+                .Include(a => a.Documents)
+                    .ThenInclude(d => d.Apartment)  // Include Apartment through Documents
+                .Include(a => a.Documents)
+                    .ThenInclude(d => d.Building)   // Include Building through Documents
+                .Include(a => a.Documents)
+                    .ThenInclude(d => d.DocumentDetails)  // Include DocumentDetails here
+                .Where(a => a.Id == accountId)
+                .FirstOrDefaultAsync() ?? throw new Exception("Account not found");
         }
         public async Task<List<Account>> GetAllAccountsAsync()
         {
             return await _db.Accounts
-                .Include(a => a.AccountRoles)  // Include roles
-                .ThenInclude(ar => ar.Role)
-                .ToListAsync();
+             .Include(a => a.AccountRoles).ThenInclude(ar => ar.Role)  // Include roles
+             .Include(a => a.Documents).ThenInclude(d => d.Apartment)  // Include Apartment through Documents
+             .Include(a => a.Documents).ThenInclude(d => d.Building)   // Include Building through Documents
+             .ToListAsync();
         }
 
         public async Task UpdateAccountStatus(Account account, Common.Enums.AccountStatus accountStatus)

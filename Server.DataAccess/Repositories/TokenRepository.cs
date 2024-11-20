@@ -43,11 +43,37 @@ namespace Server.DataAccess.Repositories
 
         public async Task<Account> FetchAccountFromDb(string accessToken)
         {
-            return await (from at in _db.AccessTokens
-                          join rt in _db.RefreshTokens on at.RtId equals rt.Id
-                          join a in _db.Accounts on rt.AccountId equals a.Id
-                          where at.Value == accessToken
-                          select a).FirstOrDefaultAsync() ?? throw new Exception("Account not found from this access token");
+            return await _db.AccessTokens
+                .Where(at => at.Value == accessToken)
+                .Join(
+                    _db.RefreshTokens,
+                    at => at.RtId,
+                    rt => rt.Id,
+                    (at, rt) => rt
+                )
+                .Join(
+                    _db.Accounts.Include(a => a.AccountRoles)
+                                .ThenInclude(ar => ar.Role)
+                                .Include(a => a.Documents)
+                                .ThenInclude(d => d.DocumentDetails)
+                                .Include(a => a.Documents)
+                                .ThenInclude(d => d.Apartment)
+                                .Include(a => a.Documents)
+                                .ThenInclude(d => d.Building),
+                    rt => rt.AccountId,
+                    a => a.Id,
+                    (rt, a) => a
+                )
+                .FirstOrDefaultAsync() ?? throw new Exception("Account not found from this access token");
         }
+
+        //public async Task<Account> FetchAccountFromDb(string accessToken)
+        //{
+        //    return await (from at in _db.AccessTokens
+        //                  join rt in _db.RefreshTokens on at.RtId equals rt.Id
+        //                  join a in _db.Accounts on rt.AccountId equals a.Id
+        //                  where at.Value == accessToken
+        //                  select a).FirstOrDefaultAsync() ?? throw new Exception("Account not found from this access token");
+        //}
     }
 }

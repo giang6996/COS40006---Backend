@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Net.Http.Headers;
 using Server.BusinessLogic.Interfaces;
+using Server.BusinessLogic.Services;
 using Server.Models.DTOs.Account;
 using Server.Presentation.CustomAttributes;
 using System.Security.Claims;
@@ -76,6 +78,21 @@ namespace Server.Presentation.Controllers
             catch (System.Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+            }
+        }
+
+        [HttpPut("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] UpdatePasswordRequest request)
+        {
+            try
+            {
+                string accessToken = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+                await _accountService.UpdatePasswordAsync(accessToken, request);
+                return Ok("Password reset successfully.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Failed to reset password: {ex.Message}");
             }
         }
     }

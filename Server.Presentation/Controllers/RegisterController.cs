@@ -11,14 +11,16 @@ namespace Server.Presentation.Controllers
     public class RegisterController : ControllerBase
     {
         private readonly IAccountService _accountService;
+        private readonly ICookieHelper _cookieHelper;
 
-        public RegisterController(IAccountService accountService)
+        public RegisterController(IAccountService accountService, ICookieHelper cookieHelper)
         {
             _accountService = accountService;
+            _cookieHelper = cookieHelper;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+        public async Task<IActionResult> Register([FromForm] RegisterRequest request, [FromForm] List<IFormFile> documents)
         {
             if (request == null)
             {
@@ -27,9 +29,10 @@ namespace Server.Presentation.Controllers
 
             try
             {
-                var token = await _accountService.RegisterAsync(request);
+                // Pass the `request` object along with `documents` to `RegisterAsync`
+                var token = await _accountService.RegisterAsync(request, documents);
 
-                Response.Cookies.Append("refreshToken", token.RefreshToken, new CookieOptions
+                _cookieHelper.SetCookie(Response, "refreshToken", token.RefreshToken, new CookieOptions
                 {
                     HttpOnly = true,
                     Secure = true,
@@ -43,28 +46,10 @@ namespace Server.Presentation.Controllers
             {
                 return BadRequest(ex.Message);
             }
-        }
-
-        [HttpPost("register-resident")]
-        public async Task<IActionResult> RegisterResident([FromForm] ResidentRegistrationDto registrationDto)
-        {
-            if (registrationDto == null)
+            catch (Exception)
             {
-                return BadRequest(new { message = "Invalid resident registration request." });
-            }
-
-            try
-            {
-                await _accountService.RegisterResidentWithDocumentsAsync(registrationDto);
-                return Ok(new { message = "Registration submitted successfully. Awaiting admin approval." });
-            }
-            catch (InvalidOperationException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { message = "An error occurred during registration.", details = ex.Message });
+                // Return a custom error response for unhandled exceptions
+                return StatusCode(500, new { message = "An error occurred while processing your request. Please try again later." });
             }
         }
     }

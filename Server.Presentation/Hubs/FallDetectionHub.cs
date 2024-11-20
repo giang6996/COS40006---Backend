@@ -12,18 +12,18 @@ namespace Server.Presentation.Hubs
 
         public Task SendMessageToAll(string message)
         {
-            return Clients.All.SendAsync("ReceiveMessage", message);
+            return Clients.Others.SendAsync("ReceiveMessage", message);
         }
 
         public override async Task OnConnectedAsync()
         {
-            await Clients.All.SendAsync("UserConnected");
+            await Clients.Others.SendAsync("UserConnected");
             await base.OnConnectedAsync();
         }
 
         public override async Task OnDisconnectedAsync(Exception? ex)
         {
-            await Clients.All.SendAsync("UserDisconnected");
+            await Clients.Others.SendAsync("UserDisconnected");
             await base.OnDisconnectedAsync(ex);
         }
     }

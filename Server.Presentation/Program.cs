@@ -1,6 +1,7 @@
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Server.BusinessLogic.Interfaces;
 using Server.BusinessLogic.Services;
@@ -64,9 +65,12 @@ builder.Services.AddSignalR();
 builder.Services.AddScoped<IAuthLibraryService, AuthLibraryService>();
 builder.Services.AddScoped<ITokenRepository, TokenRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<IBuildingRepository, BuildingRepository>();
+builder.Services.AddScoped<IApartmentRepository, ApartmentRepository>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IFileRepository, FileRepository>();
 builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddScoped<ICookieHelper, CookieHelper>();
 builder.Services.AddScoped<IPropertyDossierService, PropertyDossierService>();
 builder.Services.AddScoped<IPropertyDossierRepository, PropertyDossierRepository>();
 builder.Services.AddScoped<IModuleRepository, ModuleRepository>();
@@ -81,6 +85,7 @@ builder.Services.AddScoped<IGroupRepository, GroupRepository>();
 builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
 
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

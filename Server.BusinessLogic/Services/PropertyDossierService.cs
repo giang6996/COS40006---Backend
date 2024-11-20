@@ -28,7 +28,10 @@ namespace Server.BusinessLogic.Services
             {
                 long accountId = (long)Convert.ToDouble(_authLibraryService.GetClaimValue(ClaimTypes.NameIdentifier, accessToken));
                 Module module = await _moduleRepository.GetModuleByModuleName(Common.Enums.Module.PropertyDossier);
-                Document document = await _propertyDossierRepository.CreateNewDoc(module, accountId, apartmentInfo.RoomNumber, apartmentInfo.BuildingName, apartmentInfo.BuildingAddress);
+
+                // Ensure CreateNewDoc is called with buildingId and apartmentId
+                Document document = await _propertyDossierRepository.CreateNewDoc(module, accountId, apartmentInfo.BuildingId, apartmentInfo.ApartmentId);
+
                 await _fileService.UploadFileAsync(files, accountId, document);
             }
             catch (Exception ex)

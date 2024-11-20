@@ -5,6 +5,13 @@ using Server.Models.ResponseModels;
 using Server.Models.DTOs.Account;
 using Server.Common.Enums;
 using System.Data;
+using Server.Models.DTOs.PropertyDossier;
+using Microsoft.AspNetCore.Http;
+using Server.Models.DTOs.Document;
+using Microsoft.AspNetCore.Identity.Data;
+using BCrypt.Net;
+using RegisterRequest = Server.Models.DTOs.Account.RegisterRequest;
+using LoginRequest = Server.Models.DTOs.Account.LoginRequest;
 
 namespace Server.BusinessLogic.Services
 {
@@ -13,26 +20,26 @@ namespace Server.BusinessLogic.Services
         private readonly IAuthLibraryService _authLibraryService;
         private readonly IAccountRepository _accountRepository;
         private readonly ITokenRepository _tokenRepository;
+        private readonly IResidentRepository _residentRepository;
         private readonly IAuthorizeRepository _authorizeRepository;
         private readonly IPropertyDossierService _propertyDossierService;
 
-        public AccountService(IAuthLibraryService authLibraryService, IAccountRepository accountRepository, ITokenRepository tokenRepository, IAuthorizeRepository authorizeRepository, IPropertyDossierService propertyDossierService)
+        public AccountService(IAuthLibraryService authLibraryService, IAccountRepository accountRepository, ITokenRepository tokenRepository, IAuthorizeRepository authorizeRepository, IPropertyDossierService propertyDossierService, IResidentRepository residentRepository)
         {
             _authLibraryService = authLibraryService;
             _accountRepository = accountRepository;
             _tokenRepository = tokenRepository;
             _authorizeRepository = authorizeRepository;
             _propertyDossierService = propertyDossierService;
+            _residentRepository = residentRepository;
         }
 
-        public async Task<Token> RegisterAsync(RegisterRequest request)
+        public async Task<Token> RegisterAsync(RegisterRequest request, List<IFormFile> documents)
         {
             if (_accountRepository.CheckAccountExist(request.Email))
                 throw new InvalidOperationException("This email already exists!");
 
             string passwordHashed = BCrypt.Net.BCrypt.HashPassword(request.Password);
-
-            long accountCount = _accountRepository.CountAccount();
 
             Account account = new()
             {
@@ -46,7 +53,13 @@ namespace Server.BusinessLogic.Services
             };
 
             await _accountRepository.AddAccountAsync(account);
-            await _authorizeRepository.AssignAccountRole(account, Common.Enums.Role.User);
+            await _authorizeRepository.AssignAccountRole(account, Common.Enums.Role.User); // assign account as Resident as default
+
+            ApartmentInfoRequest apartmentInfo = new()
+            {
+                BuildingId = request.BuildingId,
+                ApartmentId = request.ApartmentId
+            };
 
             var token = _authLibraryService.Generate(account);
             if (token is (string at, string rt))
@@ -69,6 +82,8 @@ namespace Server.BusinessLogic.Services
                 };
                 await _tokenRepository.AddAccessTokenAsync(accessToken);
 
+                await _propertyDossierService.NewPropertyDossier(at, documents, apartmentInfo);
+
                 Token returnToken = new()
                 {
                     AccessToken = at,
@@ -87,6 +102,9 @@ namespace Server.BusinessLogic.Services
 
             if (!BCrypt.Net.BCrypt.Verify(request.Password, account.Password))
                 throw new Exception("Incorrect Password");
+
+            if (account.Status == "Pending")
+                throw new Exception("Account not active");
 
             var token = _authLibraryService.Generate(account);
             if (token is (string at, string rt))
@@ -124,6 +142,12 @@ namespace Server.BusinessLogic.Services
         public async Task<AccountDTO> GetAccountInfos(string accessToken)
         {
             Account account = await _authLibraryService.FetchAccount(accessToken);
+
+            var roles = account.AccountRoles.Select(ar => ar.Role.Name).ToList();
+            var firstDocument = account.Documents.FirstOrDefault();
+            var apartmentRoomNumber = firstDocument?.Apartment?.RoomNumber;
+            var buildingName = firstDocument?.Building?.BuildingName;
+            var buildingAddress = firstDocument?.Building?.BuildingAddress;
             AccountDTO accountDTO = new()
             {
                 Id = account.Id,
@@ -132,7 +156,22 @@ namespace Server.BusinessLogic.Services
                 LastName = account.LastName,
                 Email = account.Email,
                 PhoneNumber = account.PhoneNumber,
-                Status = account.Status
+                Status = account.Status,
+                Roles = roles,
+                Documents = account.Documents
+                    .SelectMany(d => d.DocumentDetails)
+                    .Select(dd => new DocumentDetails
+                    {
+                        Id = dd.Id,
+                        Name = dd.Name,
+                        DocumentDesc = dd.DocumentDesc,
+                        Status = dd.Status,
+                        DocumentLink = dd.DocumentLink
+                    }).ToList(),
+
+                // Map apartment and building details
+                Apartment = apartmentRoomNumber?.ToString(),
+                Building = buildingName + ' ' + buildingAddress,
             };
 
             return accountDTO;
@@ -141,13 +180,16 @@ namespace Server.BusinessLogic.Services
         public async Task<AccountDTO> GetAccountByIdAsync(long accountId)
         {
             // Fetch the account by its ID
-            Account? account = await _accountRepository.GetAccountByAccountIdAsync(accountId);
-            if (account == null)
-            {
-                throw new Exception("Account not found");
-            }
+            Account account = await _accountRepository.GetAccountByAccountIdAsync(accountId)
+                ?? throw new Exception("Account not found");
 
             var roles = account.AccountRoles.Select(ar => ar.Role.Name).ToList();
+
+            // Get apartment and building info from the first document, if available
+            var firstDocument = account.Documents.FirstOrDefault();
+            var apartmentRoomNumber = firstDocument?.Apartment?.RoomNumber;
+            var buildingName = firstDocument?.Building?.BuildingName;
+            var buildingAddress = firstDocument?.Building?.BuildingAddress;
 
             // Map the account to AccountDTO
             AccountDTO accountDTO = new()
@@ -159,7 +201,21 @@ namespace Server.BusinessLogic.Services
                 Email = account.Email,
                 PhoneNumber = account.PhoneNumber,
                 Status = account.Status,
-                Roles = roles // Return the list of roles for this account
+                Roles = roles,
+                Documents = account.Documents
+                    .SelectMany(d => d.DocumentDetails)
+                    .Select(dd => new DocumentDetails
+                    {
+                        Id = dd.Id,
+                        Name = dd.Name,
+                        DocumentDesc = dd.DocumentDesc,
+                        Status = dd.Status,
+                        DocumentLink = dd.DocumentLink
+                    }).ToList(), 
+
+                // Map apartment and building details
+                Apartment = apartmentRoomNumber?.ToString(),
+                Building = buildingName + ' ' + buildingAddress,
             };
 
             return accountDTO;
@@ -176,11 +232,37 @@ namespace Server.BusinessLogic.Services
                 Email = account.Email,
                 PhoneNumber = account.PhoneNumber,
                 Status = account.Status,
-                Roles = account.AccountRoles.Select(ar => ar.Role.Name).ToList()  // Fetch roles
+                Roles = account.AccountRoles.Select(ar => ar.Role.Name).ToList(),  // Fetch roles
+                Apartment = account.Documents.FirstOrDefault()?.Apartment?.RoomNumber.ToString(), // Retrieve Apartment info if linked
+                Building = account.Documents.FirstOrDefault()?.Building?.BuildingName    // Retrieve Building info if linked
             }).ToList();
 
             return accountDTOs;
         }
+
+        public async Task UpdatePasswordAsync(string accessToken, UpdatePasswordRequest request)
+        {
+            // Fetch the account from the access token
+            Account account = await _tokenRepository.FetchAccountFromDb(accessToken);
+            if (account == null) throw new Exception("Account not found");
+
+            // Verify the old password
+            if (!BCrypt.Net.BCrypt.Verify(request.OldPassword, account.Password))
+            {
+                throw new Exception("Incorrect old password.");
+            }
+
+            // Ensure new password and confirmation match
+            if (request.NewPassword != request.ConfirmPassword)
+            {
+                throw new Exception("New password and confirmation do not match.");
+            }
+
+            // Update and hash the new password
+            account.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
+            await _residentRepository.UpdateAsync(account);
+        }
+
 
     }
 }

@@ -2,9 +2,10 @@ namespace Server.Models.DTOs.PropertyDossier
 {
     public class ApartmentInfoRequest
     {
-        public int RoomNumber { get; set; }
-        public required string BuildingName { get; set; }
-        public required string BuildingAddress { get; set; }
+        // Fields to hold the Building and Apartment IDs
+        public long BuildingId { get; set; }
+        public long ApartmentId { get; set; }
+
     }
 
 }

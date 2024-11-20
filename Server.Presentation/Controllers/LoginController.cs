@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Server.BusinessLogic.Interfaces;
 using Server.Models.ResponseModels;
 using Server.Models.DTOs.Account;
-
 namespace Server.Presentation.Controllers
 {
     [ApiController]
@@ -12,10 +11,12 @@ namespace Server.Presentation.Controllers
     public class LoginController : ControllerBase
     {
         private readonly IAccountService _accountService;
+        private readonly ICookieHelper _cookieHelper;
 
-        public LoginController(IAccountService accountService)
+        public LoginController(IAccountService accountService, ICookieHelper cookieHelper)
         {
             _accountService = accountService;
+            _cookieHelper = cookieHelper;
         }
 
         [HttpPost]
@@ -30,7 +31,7 @@ namespace Server.Presentation.Controllers
             {
                 Token token = await _accountService.LoginAsync(request);
 
-                Response.Cookies.Append("refreshToken", token.RefreshToken, new CookieOptions()
+                _cookieHelper.SetCookie(Response, "refreshToken", token.RefreshToken, new CookieOptions()
                 {
                     HttpOnly = true,
                     Secure = true,
@@ -48,6 +49,11 @@ namespace Server.Presentation.Controllers
             {
                 return Unauthorized(new { message = "Incorrect password." });
             }
+            catch (Exception ex) when (ex.Message.Contains("Account not active"))
+            {
+                return Unauthorized(new { message = "Account is not actived" });
+            }
+
             catch (Exception)
             {
                 return StatusCode(500, new { message = "An error occurred while processing your request. Please try again later." });

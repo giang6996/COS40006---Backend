@@ -101,58 +101,6 @@ namespace Server.DataAccess.Migrations
                     b.HasIndex("TenantId");
 
                     b.ToTable("Accounts");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1L,
-                            Email = "test001@gmail.com",
-                            FirstName = "test",
-                            LastName = "001",
-                            Password = "$2a$11$eaCV0/gsB6YuF3e86QZ2CeUAb2dK7L1rSfuNxNiVPyGpkEVqzj6s.",
-                            Status = "Active",
-                            TenantId = 1L
-                        },
-                        new
-                        {
-                            Id = 2L,
-                            Email = "test002@gmail.com",
-                            FirstName = "test",
-                            LastName = "002",
-                            Password = "$2a$11$eaCV0/gsB6YuF3e86QZ2CeUAb2dK7L1rSfuNxNiVPyGpkEVqzj6s.",
-                            Status = "Pending",
-                            TenantId = 1L
-                        },
-                        new
-                        {
-                            Id = 3L,
-                            Email = "test003@gmail.com",
-                            FirstName = "test",
-                            LastName = "003",
-                            Password = "$2a$11$eaCV0/gsB6YuF3e86QZ2CeUAb2dK7L1rSfuNxNiVPyGpkEVqzj6s.",
-                            Status = "Pending",
-                            TenantId = 2L
-                        },
-                        new
-                        {
-                            Id = 4L,
-                            Email = "test004@gmail.com",
-                            FirstName = "test",
-                            LastName = "004",
-                            Password = "$2a$11$eaCV0/gsB6YuF3e86QZ2CeUAb2dK7L1rSfuNxNiVPyGpkEVqzj6s.",
-                            Status = "Pending",
-                            TenantId = 3L
-                        },
-                        new
-                        {
-                            Id = 5L,
-                            Email = "test005@gmail.com",
-                            FirstName = "test",
-                            LastName = "005",
-                            Password = "$2a$11$eaCV0/gsB6YuF3e86QZ2CeUAb2dK7L1rSfuNxNiVPyGpkEVqzj6s.",
-                            Status = "Pending",
-                            TenantId = 5L
-                        });
                 });
 
             modelBuilder.Entity("Server.Common.Models.AccountGroup", b =>
@@ -269,6 +217,708 @@ namespace Server.DataAccess.Migrations
                     b.HasIndex("BuildingId");
 
                     b.ToTable("Apartments");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            Available = "No",
+                            BuildingId = 2L,
+                            RoomNumber = 101
+                        },
+                        new
+                        {
+                            Id = 2L,
+                            Available = "Yes",
+                            BuildingId = 3L,
+                            RoomNumber = 102
+                        },
+                        new
+                        {
+                            Id = 3L,
+                            Available = "No",
+                            BuildingId = 1L,
+                            RoomNumber = 103
+                        },
+                        new
+                        {
+                            Id = 4L,
+                            Available = "Yes",
+                            BuildingId = 2L,
+                            RoomNumber = 104
+                        },
+                        new
+                        {
+                            Id = 5L,
+                            Available = "No",
+                            BuildingId = 3L,
+                            RoomNumber = 105
+                        },
+                        new
+                        {
+                            Id = 6L,
+                            Available = "Yes",
+                            BuildingId = 1L,
+                            RoomNumber = 106
+                        },
+                        new
+                        {
+                            Id = 7L,
+                            Available = "No",
+                            BuildingId = 2L,
+                            RoomNumber = 107
+                        },
+                        new
+                        {
+                            Id = 8L,
+                            Available = "Yes",
+                            BuildingId = 3L,
+                            RoomNumber = 108
+                        },
+                        new
+                        {
+                            Id = 9L,
+                            Available = "No",
+                            BuildingId = 1L,
+                            RoomNumber = 109
+                        },
+                        new
+                        {
+                            Id = 10L,
+                            Available = "Yes",
+                            BuildingId = 2L,
+                            RoomNumber = 110
+                        },
+                        new
+                        {
+                            Id = 11L,
+                            Available = "No",
+                            BuildingId = 3L,
+                            RoomNumber = 111
+                        },
+                        new
+                        {
+                            Id = 12L,
+                            Available = "Yes",
+                            BuildingId = 1L,
+                            RoomNumber = 112
+                        },
+                        new
+                        {
+                            Id = 13L,
+                            Available = "No",
+                            BuildingId = 2L,
+                            RoomNumber = 113
+                        },
+                        new
+                        {
+                            Id = 14L,
+                            Available = "Yes",
+                            BuildingId = 3L,
+                            RoomNumber = 114
+                        },
+                        new
+                        {
+                            Id = 15L,
+                            Available = "No",
+                            BuildingId = 1L,
+                            RoomNumber = 115
+                        },
+                        new
+                        {
+                            Id = 16L,
+                            Available = "Yes",
+                            BuildingId = 2L,
+                            RoomNumber = 116
+                        },
+                        new
+                        {
+                            Id = 17L,
+                            Available = "No",
+                            BuildingId = 3L,
+                            RoomNumber = 117
+                        },
+                        new
+                        {
+                            Id = 18L,
+                            Available = "Yes",
+                            BuildingId = 1L,
+                            RoomNumber = 118
+                        },
+                        new
+                        {
+                            Id = 19L,
+                            Available = "No",
+                            BuildingId = 2L,
+                            RoomNumber = 119
+                        },
+                        new
+                        {
+                            Id = 20L,
+                            Available = "Yes",
+                            BuildingId = 3L,
+                            RoomNumber = 120
+                        },
+                        new
+                        {
+                            Id = 21L,
+                            Available = "No",
+                            BuildingId = 1L,
+                            RoomNumber = 121
+                        },
+                        new
+                        {
+                            Id = 22L,
+                            Available = "Yes",
+                            BuildingId = 2L,
+                            RoomNumber = 122
+                        },
+                        new
+                        {
+                            Id = 23L,
+                            Available = "No",
+                            BuildingId = 3L,
+                            RoomNumber = 123
+                        },
+                        new
+                        {
+                            Id = 24L,
+                            Available = "Yes",
+                            BuildingId = 1L,
+                            RoomNumber = 124
+                        },
+                        new
+                        {
+                            Id = 25L,
+                            Available = "No",
+                            BuildingId = 2L,
+                            RoomNumber = 125
+                        },
+                        new
+                        {
+                            Id = 26L,
+                            Available = "Yes",
+                            BuildingId = 3L,
+                            RoomNumber = 126
+                        },
+                        new
+                        {
+                            Id = 27L,
+                            Available = "No",
+                            BuildingId = 1L,
+                            RoomNumber = 127
+                        },
+                        new
+                        {
+                            Id = 28L,
+                            Available = "Yes",
+                            BuildingId = 2L,
+                            RoomNumber = 128
+                        },
+                        new
+                        {
+                            Id = 29L,
+                            Available = "No",
+                            BuildingId = 3L,
+                            RoomNumber = 129
+                        },
+                        new
+                        {
+                            Id = 30L,
+                            Available = "Yes",
+                            BuildingId = 1L,
+                            RoomNumber = 130
+                        },
+                        new
+                        {
+                            Id = 31L,
+                            Available = "No",
+                            BuildingId = 2L,
+                            RoomNumber = 131
+                        },
+                        new
+                        {
+                            Id = 32L,
+                            Available = "Yes",
+                            BuildingId = 3L,
+                            RoomNumber = 132
+                        },
+                        new
+                        {
+                            Id = 33L,
+                            Available = "No",
+                            BuildingId = 1L,
+                            RoomNumber = 133
+                        },
+                        new
+                        {
+                            Id = 34L,
+                            Available = "Yes",
+                            BuildingId = 2L,
+                            RoomNumber = 134
+                        },
+                        new
+                        {
+                            Id = 35L,
+                            Available = "No",
+                            BuildingId = 3L,
+                            RoomNumber = 135
+                        },
+                        new
+                        {
+                            Id = 36L,
+                            Available = "Yes",
+                            BuildingId = 1L,
+                            RoomNumber = 136
+                        },
+                        new
+                        {
+                            Id = 37L,
+                            Available = "No",
+                            BuildingId = 2L,
+                            RoomNumber = 137
+                        },
+                        new
+                        {
+                            Id = 38L,
+                            Available = "Yes",
+                            BuildingId = 3L,
+                            RoomNumber = 138
+                        },
+                        new
+                        {
+                            Id = 39L,
+                            Available = "No",
+                            BuildingId = 1L,
+                            RoomNumber = 139
+                        },
+                        new
+                        {
+                            Id = 40L,
+                            Available = "Yes",
+                            BuildingId = 2L,
+                            RoomNumber = 140
+                        },
+                        new
+                        {
+                            Id = 41L,
+                            Available = "No",
+                            BuildingId = 3L,
+                            RoomNumber = 141
+                        },
+                        new
+                        {
+                            Id = 42L,
+                            Available = "Yes",
+                            BuildingId = 1L,
+                            RoomNumber = 142
+                        },
+                        new
+                        {
+                            Id = 43L,
+                            Available = "No",
+                            BuildingId = 2L,
+                            RoomNumber = 143
+                        },
+                        new
+                        {
+                            Id = 44L,
+                            Available = "Yes",
+                            BuildingId = 3L,
+                            RoomNumber = 144
+                        },
+                        new
+                        {
+                            Id = 45L,
+                            Available = "No",
+                            BuildingId = 1L,
+                            RoomNumber = 145
+                        },
+                        new
+                        {
+                            Id = 46L,
+                            Available = "Yes",
+                            BuildingId = 2L,
+                            RoomNumber = 146
+                        },
+                        new
+                        {
+                            Id = 47L,
+                            Available = "No",
+                            BuildingId = 3L,
+                            RoomNumber = 147
+                        },
+                        new
+                        {
+                            Id = 48L,
+                            Available = "Yes",
+                            BuildingId = 1L,
+                            RoomNumber = 148
+                        },
+                        new
+                        {
+                            Id = 49L,
+                            Available = "No",
+                            BuildingId = 2L,
+                            RoomNumber = 149
+                        },
+                        new
+                        {
+                            Id = 50L,
+                            Available = "Yes",
+                            BuildingId = 3L,
+                            RoomNumber = 150
+                        },
+                        new
+                        {
+                            Id = 51L,
+                            Available = "No",
+                            BuildingId = 1L,
+                            RoomNumber = 151
+                        },
+                        new
+                        {
+                            Id = 52L,
+                            Available = "Yes",
+                            BuildingId = 2L,
+                            RoomNumber = 152
+                        },
+                        new
+                        {
+                            Id = 53L,
+                            Available = "No",
+                            BuildingId = 3L,
+                            RoomNumber = 153
+                        },
+                        new
+                        {
+                            Id = 54L,
+                            Available = "Yes",
+                            BuildingId = 1L,
+                            RoomNumber = 154
+                        },
+                        new
+                        {
+                            Id = 55L,
+                            Available = "No",
+                            BuildingId = 2L,
+                            RoomNumber = 155
+                        },
+                        new
+                        {
+                            Id = 56L,
+                            Available = "Yes",
+                            BuildingId = 3L,
+                            RoomNumber = 156
+                        },
+                        new
+                        {
+                            Id = 57L,
+                            Available = "No",
+                            BuildingId = 1L,
+                            RoomNumber = 157
+                        },
+                        new
+                        {
+                            Id = 58L,
+                            Available = "Yes",
+                            BuildingId = 2L,
+                            RoomNumber = 158
+                        },
+                        new
+                        {
+                            Id = 59L,
+                            Available = "No",
+                            BuildingId = 3L,
+                            RoomNumber = 159
+                        },
+                        new
+                        {
+                            Id = 60L,
+                            Available = "Yes",
+                            BuildingId = 1L,
+                            RoomNumber = 160
+                        },
+                        new
+                        {
+                            Id = 61L,
+                            Available = "No",
+                            BuildingId = 2L,
+                            RoomNumber = 161
+                        },
+                        new
+                        {
+                            Id = 62L,
+                            Available = "Yes",
+                            BuildingId = 3L,
+                            RoomNumber = 162
+                        },
+                        new
+                        {
+                            Id = 63L,
+                            Available = "No",
+                            BuildingId = 1L,
+                            RoomNumber = 163
+                        },
+                        new
+                        {
+                            Id = 64L,
+                            Available = "Yes",
+                            BuildingId = 2L,
+                            RoomNumber = 164
+                        },
+                        new
+                        {
+                            Id = 65L,
+                            Available = "No",
+                            BuildingId = 3L,
+                            RoomNumber = 165
+                        },
+                        new
+                        {
+                            Id = 66L,
+                            Available = "Yes",
+                            BuildingId = 1L,
+                            RoomNumber = 166
+                        },
+                        new
+                        {
+                            Id = 67L,
+                            Available = "No",
+                            BuildingId = 2L,
+                            RoomNumber = 167
+                        },
+                        new
+                        {
+                            Id = 68L,
+                            Available = "Yes",
+                            BuildingId = 3L,
+                            RoomNumber = 168
+                        },
+                        new
+                        {
+                            Id = 69L,
+                            Available = "No",
+                            BuildingId = 1L,
+                            RoomNumber = 169
+                        },
+                        new
+                        {
+                            Id = 70L,
+                            Available = "Yes",
+                            BuildingId = 2L,
+                            RoomNumber = 170
+                        },
+                        new
+                        {
+                            Id = 71L,
+                            Available = "No",
+                            BuildingId = 3L,
+                            RoomNumber = 171
+                        },
+                        new
+                        {
+                            Id = 72L,
+                            Available = "Yes",
+                            BuildingId = 1L,
+                            RoomNumber = 172
+                        },
+                        new
+                        {
+                            Id = 73L,
+                            Available = "No",
+                            BuildingId = 2L,
+                            RoomNumber = 173
+                        },
+                        new
+                        {
+                            Id = 74L,
+                            Available = "Yes",
+                            BuildingId = 3L,
+                            RoomNumber = 174
+                        },
+                        new
+                        {
+                            Id = 75L,
+                            Available = "No",
+                            BuildingId = 1L,
+                            RoomNumber = 175
+                        },
+                        new
+                        {
+                            Id = 76L,
+                            Available = "Yes",
+                            BuildingId = 2L,
+                            RoomNumber = 176
+                        },
+                        new
+                        {
+                            Id = 77L,
+                            Available = "No",
+                            BuildingId = 3L,
+                            RoomNumber = 177
+                        },
+                        new
+                        {
+                            Id = 78L,
+                            Available = "Yes",
+                            BuildingId = 1L,
+                            RoomNumber = 178
+                        },
+                        new
+                        {
+                            Id = 79L,
+                            Available = "No",
+                            BuildingId = 2L,
+                            RoomNumber = 179
+                        },
+                        new
+                        {
+                            Id = 80L,
+                            Available = "Yes",
+                            BuildingId = 3L,
+                            RoomNumber = 180
+                        },
+                        new
+                        {
+                            Id = 81L,
+                            Available = "No",
+                            BuildingId = 1L,
+                            RoomNumber = 181
+                        },
+                        new
+                        {
+                            Id = 82L,
+                            Available = "Yes",
+                            BuildingId = 2L,
+                            RoomNumber = 182
+                        },
+                        new
+                        {
+                            Id = 83L,
+                            Available = "No",
+                            BuildingId = 3L,
+                            RoomNumber = 183
+                        },
+                        new
+                        {
+                            Id = 84L,
+                            Available = "Yes",
+                            BuildingId = 1L,
+                            RoomNumber = 184
+                        },
+                        new
+                        {
+                            Id = 85L,
+                            Available = "No",
+                            BuildingId = 2L,
+                            RoomNumber = 185
+                        },
+                        new
+                        {
+                            Id = 86L,
+                            Available = "Yes",
+                            BuildingId = 3L,
+                            RoomNumber = 186
+                        },
+                        new
+                        {
+                            Id = 87L,
+                            Available = "No",
+                            BuildingId = 1L,
+                            RoomNumber = 187
+                        },
+                        new
+                        {
+                            Id = 88L,
+                            Available = "Yes",
+                            BuildingId = 2L,
+                            RoomNumber = 188
+                        },
+                        new
+                        {
+                            Id = 89L,
+                            Available = "No",
+                            BuildingId = 3L,
+                            RoomNumber = 189
+                        },
+                        new
+                        {
+                            Id = 90L,
+                            Available = "Yes",
+                            BuildingId = 1L,
+                            RoomNumber = 190
+                        },
+                        new
+                        {
+                            Id = 91L,
+                            Available = "No",
+                            BuildingId = 2L,
+                            RoomNumber = 191
+                        },
+                        new
+                        {
+                            Id = 92L,
+                            Available = "Yes",
+                            BuildingId = 3L,
+                            RoomNumber = 192
+                        },
+                        new
+                        {
+                            Id = 93L,
+                            Available = "No",
+                            BuildingId = 1L,
+                            RoomNumber = 193
+                        },
+                        new
+                        {
+                            Id = 94L,
+                            Available = "Yes",
+                            BuildingId = 2L,
+                            RoomNumber = 194
+                        },
+                        new
+                        {
+                            Id = 95L,
+                            Available = "No",
+                            BuildingId = 3L,
+                            RoomNumber = 195
+                        },
+                        new
+                        {
+                            Id = 96L,
+                            Available = "Yes",
+                            BuildingId = 1L,
+                            RoomNumber = 196
+                        },
+                        new
+                        {
+                            Id = 97L,
+                            Available = "No",
+                            BuildingId = 2L,
+                            RoomNumber = 197
+                        },
+                        new
+                        {
+                            Id = 98L,
+                            Available = "Yes",
+                            BuildingId = 3L,
+                            RoomNumber = 198
+                        },
+                        new
+                        {
+                            Id = 99L,
+                            Available = "No",
+                            BuildingId = 1L,
+                            RoomNumber = 199
+                        },
+                        new
+                        {
+                            Id = 100L,
+                            Available = "Yes",
+                            BuildingId = 2L,
+                            RoomNumber = 200
+                        });
                 });
 
             modelBuilder.Entity("Server.Common.Models.ApartmentDetail", b =>
@@ -300,6 +950,908 @@ namespace Server.DataAccess.Migrations
                         .IsUnique();
 
                     b.ToTable("ApartmentDetails");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            ApartmentId = 1L,
+                            NumBathroom = 2,
+                            NumBedroom = 2,
+                            Size = 75.0,
+                            Type = "One Bedroom"
+                        },
+                        new
+                        {
+                            Id = 2L,
+                            ApartmentId = 2L,
+                            NumBathroom = 1,
+                            NumBedroom = 3,
+                            Size = 100.0,
+                            Type = "Studio"
+                        },
+                        new
+                        {
+                            Id = 3L,
+                            ApartmentId = 3L,
+                            NumBathroom = 2,
+                            NumBedroom = 1,
+                            Size = 50.0,
+                            Type = "Penthouse"
+                        },
+                        new
+                        {
+                            Id = 4L,
+                            ApartmentId = 4L,
+                            NumBathroom = 1,
+                            NumBedroom = 2,
+                            Size = 75.0,
+                            Type = "Studio"
+                        },
+                        new
+                        {
+                            Id = 5L,
+                            ApartmentId = 5L,
+                            NumBathroom = 2,
+                            NumBedroom = 3,
+                            Size = 100.0,
+                            Type = "One Bedroom"
+                        },
+                        new
+                        {
+                            Id = 6L,
+                            ApartmentId = 6L,
+                            NumBathroom = 1,
+                            NumBedroom = 1,
+                            Size = 50.0,
+                            Type = "Penthouse"
+                        },
+                        new
+                        {
+                            Id = 7L,
+                            ApartmentId = 7L,
+                            NumBathroom = 2,
+                            NumBedroom = 2,
+                            Size = 75.0,
+                            Type = "One Bedroom"
+                        },
+                        new
+                        {
+                            Id = 8L,
+                            ApartmentId = 8L,
+                            NumBathroom = 1,
+                            NumBedroom = 3,
+                            Size = 100.0,
+                            Type = "Studio"
+                        },
+                        new
+                        {
+                            Id = 9L,
+                            ApartmentId = 9L,
+                            NumBathroom = 2,
+                            NumBedroom = 1,
+                            Size = 50.0,
+                            Type = "Penthouse"
+                        },
+                        new
+                        {
+                            Id = 10L,
+                            ApartmentId = 10L,
+                            NumBathroom = 1,
+                            NumBedroom = 2,
+                            Size = 75.0,
+                            Type = "Studio"
+                        },
+                        new
+                        {
+                            Id = 11L,
+                            ApartmentId = 11L,
+                            NumBathroom = 2,
+                            NumBedroom = 3,
+                            Size = 100.0,
+                            Type = "One Bedroom"
+                        },
+                        new
+                        {
+                            Id = 12L,
+                            ApartmentId = 12L,
+                            NumBathroom = 1,
+                            NumBedroom = 1,
+                            Size = 50.0,
+                            Type = "Penthouse"
+                        },
+                        new
+                        {
+                            Id = 13L,
+                            ApartmentId = 13L,
+                            NumBathroom = 2,
+                            NumBedroom = 2,
+                            Size = 75.0,
+                            Type = "One Bedroom"
+                        },
+                        new
+                        {
+                            Id = 14L,
+                            ApartmentId = 14L,
+                            NumBathroom = 1,
+                            NumBedroom = 3,
+                            Size = 100.0,
+                            Type = "Studio"
+                        },
+                        new
+                        {
+                            Id = 15L,
+                            ApartmentId = 15L,
+                            NumBathroom = 2,
+                            NumBedroom = 1,
+                            Size = 50.0,
+                            Type = "Penthouse"
+                        },
+                        new
+                        {
+                            Id = 16L,
+                            ApartmentId = 16L,
+                            NumBathroom = 1,
+                            NumBedroom = 2,
+                            Size = 75.0,
+                            Type = "Studio"
+                        },
+                        new
+                        {
+                            Id = 17L,
+                            ApartmentId = 17L,
+                            NumBathroom = 2,
+                            NumBedroom = 3,
+                            Size = 100.0,
+                            Type = "One Bedroom"
+                        },
+                        new
+                        {
+                            Id = 18L,
+                            ApartmentId = 18L,
+                            NumBathroom = 1,
+                            NumBedroom = 1,
+                            Size = 50.0,
+                            Type = "Penthouse"
+                        },
+                        new
+                        {
+                            Id = 19L,
+                            ApartmentId = 19L,
+                            NumBathroom = 2,
+                            NumBedroom = 2,
+                            Size = 75.0,
+                            Type = "One Bedroom"
+                        },
+                        new
+                        {
+                            Id = 20L,
+                            ApartmentId = 20L,
+                            NumBathroom = 1,
+                            NumBedroom = 3,
+                            Size = 100.0,
+                            Type = "Studio"
+                        },
+                        new
+                        {
+                            Id = 21L,
+                            ApartmentId = 21L,
+                            NumBathroom = 2,
+                            NumBedroom = 1,
+                            Size = 50.0,
+                            Type = "Penthouse"
+                        },
+                        new
+                        {
+                            Id = 22L,
+                            ApartmentId = 22L,
+                            NumBathroom = 1,
+                            NumBedroom = 2,
+                            Size = 75.0,
+                            Type = "Studio"
+                        },
+                        new
+                        {
+                            Id = 23L,
+                            ApartmentId = 23L,
+                            NumBathroom = 2,
+                            NumBedroom = 3,
+                            Size = 100.0,
+                            Type = "One Bedroom"
+                        },
+                        new
+                        {
+                            Id = 24L,
+                            ApartmentId = 24L,
+                            NumBathroom = 1,
+                            NumBedroom = 1,
+                            Size = 50.0,
+                            Type = "Penthouse"
+                        },
+                        new
+                        {
+                            Id = 25L,
+                            ApartmentId = 25L,
+                            NumBathroom = 2,
+                            NumBedroom = 2,
+                            Size = 75.0,
+                            Type = "One Bedroom"
+                        },
+                        new
+                        {
+                            Id = 26L,
+                            ApartmentId = 26L,
+                            NumBathroom = 1,
+                            NumBedroom = 3,
+                            Size = 100.0,
+                            Type = "Studio"
+                        },
+                        new
+                        {
+                            Id = 27L,
+                            ApartmentId = 27L,
+                            NumBathroom = 2,
+                            NumBedroom = 1,
+                            Size = 50.0,
+                            Type = "Penthouse"
+                        },
+                        new
+                        {
+                            Id = 28L,
+                            ApartmentId = 28L,
+                            NumBathroom = 1,
+                            NumBedroom = 2,
+                            Size = 75.0,
+                            Type = "Studio"
+                        },
+                        new
+                        {
+                            Id = 29L,
+                            ApartmentId = 29L,
+                            NumBathroom = 2,
+                            NumBedroom = 3,
+                            Size = 100.0,
+                            Type = "One Bedroom"
+                        },
+                        new
+                        {
+                            Id = 30L,
+                            ApartmentId = 30L,
+                            NumBathroom = 1,
+                            NumBedroom = 1,
+                            Size = 50.0,
+                            Type = "Penthouse"
+                        },
+                        new
+                        {
+                            Id = 31L,
+                            ApartmentId = 31L,
+                            NumBathroom = 2,
+                            NumBedroom = 2,
+                            Size = 75.0,
+                            Type = "One Bedroom"
+                        },
+                        new
+                        {
+                            Id = 32L,
+                            ApartmentId = 32L,
+                            NumBathroom = 1,
+                            NumBedroom = 3,
+                            Size = 100.0,
+                            Type = "Studio"
+                        },
+                        new
+                        {
+                            Id = 33L,
+                            ApartmentId = 33L,
+                            NumBathroom = 2,
+                            NumBedroom = 1,
+                            Size = 50.0,
+                            Type = "Penthouse"
+                        },
+                        new
+                        {
+                            Id = 34L,
+                            ApartmentId = 34L,
+                            NumBathroom = 1,
+                            NumBedroom = 2,
+                            Size = 75.0,
+                            Type = "Studio"
+                        },
+                        new
+                        {
+                            Id = 35L,
+                            ApartmentId = 35L,
+                            NumBathroom = 2,
+                            NumBedroom = 3,
+                            Size = 100.0,
+                            Type = "One Bedroom"
+                        },
+                        new
+                        {
+                            Id = 36L,
+                            ApartmentId = 36L,
+                            NumBathroom = 1,
+                            NumBedroom = 1,
+                            Size = 50.0,
+                            Type = "Penthouse"
+                        },
+                        new
+                        {
+                            Id = 37L,
+                            ApartmentId = 37L,
+                            NumBathroom = 2,
+                            NumBedroom = 2,
+                            Size = 75.0,
+                            Type = "One Bedroom"
+                        },
+                        new
+                        {
+                            Id = 38L,
+                            ApartmentId = 38L,
+                            NumBathroom = 1,
+                            NumBedroom = 3,
+                            Size = 100.0,
+                            Type = "Studio"
+                        },
+                        new
+                        {
+                            Id = 39L,
+                            ApartmentId = 39L,
+                            NumBathroom = 2,
+                            NumBedroom = 1,
+                            Size = 50.0,
+                            Type = "Penthouse"
+                        },
+                        new
+                        {
+                            Id = 40L,
+                            ApartmentId = 40L,
+                            NumBathroom = 1,
+                            NumBedroom = 2,
+                            Size = 75.0,
+                            Type = "Studio"
+                        },
+                        new
+                        {
+                            Id = 41L,
+                            ApartmentId = 41L,
+                            NumBathroom = 2,
+                            NumBedroom = 3,
+                            Size = 100.0,
+                            Type = "One Bedroom"
+                        },
+                        new
+                        {
+                            Id = 42L,
+                            ApartmentId = 42L,
+                            NumBathroom = 1,
+                            NumBedroom = 1,
+                            Size = 50.0,
+                            Type = "Penthouse"
+                        },
+                        new
+                        {
+                            Id = 43L,
+                            ApartmentId = 43L,
+                            NumBathroom = 2,
+                            NumBedroom = 2,
+                            Size = 75.0,
+                            Type = "One Bedroom"
+                        },
+                        new
+                        {
+                            Id = 44L,
+                            ApartmentId = 44L,
+                            NumBathroom = 1,
+                            NumBedroom = 3,
+                            Size = 100.0,
+                            Type = "Studio"
+                        },
+                        new
+                        {
+                            Id = 45L,
+                            ApartmentId = 45L,
+                            NumBathroom = 2,
+                            NumBedroom = 1,
+                            Size = 50.0,
+                            Type = "Penthouse"
+                        },
+                        new
+                        {
+                            Id = 46L,
+                            ApartmentId = 46L,
+                            NumBathroom = 1,
+                            NumBedroom = 2,
+                            Size = 75.0,
+                            Type = "Studio"
+                        },
+                        new
+                        {
+                            Id = 47L,
+                            ApartmentId = 47L,
+                            NumBathroom = 2,
+                            NumBedroom = 3,
+                            Size = 100.0,
+                            Type = "One Bedroom"
+                        },
+                        new
+                        {
+                            Id = 48L,
+                            ApartmentId = 48L,
+                            NumBathroom = 1,
+                            NumBedroom = 1,
+                            Size = 50.0,
+                            Type = "Penthouse"
+                        },
+                        new
+                        {
+                            Id = 49L,
+                            ApartmentId = 49L,
+                            NumBathroom = 2,
+                            NumBedroom = 2,
+                            Size = 75.0,
+                            Type = "One Bedroom"
+                        },
+                        new
+                        {
+                            Id = 50L,
+                            ApartmentId = 50L,
+                            NumBathroom = 1,
+                            NumBedroom = 3,
+                            Size = 100.0,
+                            Type = "Studio"
+                        },
+                        new
+                        {
+                            Id = 51L,
+                            ApartmentId = 51L,
+                            NumBathroom = 2,
+                            NumBedroom = 1,
+                            Size = 50.0,
+                            Type = "Penthouse"
+                        },
+                        new
+                        {
+                            Id = 52L,
+                            ApartmentId = 52L,
+                            NumBathroom = 1,
+                            NumBedroom = 2,
+                            Size = 75.0,
+                            Type = "Studio"
+                        },
+                        new
+                        {
+                            Id = 53L,
+                            ApartmentId = 53L,
+                            NumBathroom = 2,
+                            NumBedroom = 3,
+                            Size = 100.0,
+                            Type = "One Bedroom"
+                        },
+                        new
+                        {
+                            Id = 54L,
+                            ApartmentId = 54L,
+                            NumBathroom = 1,
+                            NumBedroom = 1,
+                            Size = 50.0,
+                            Type = "Penthouse"
+                        },
+                        new
+                        {
+                            Id = 55L,
+                            ApartmentId = 55L,
+                            NumBathroom = 2,
+                            NumBedroom = 2,
+                            Size = 75.0,
+                            Type = "One Bedroom"
+                        },
+                        new
+                        {
+                            Id = 56L,
+                            ApartmentId = 56L,
+                            NumBathroom = 1,
+                            NumBedroom = 3,
+                            Size = 100.0,
+                            Type = "Studio"
+                        },
+                        new
+                        {
+                            Id = 57L,
+                            ApartmentId = 57L,
+                            NumBathroom = 2,
+                            NumBedroom = 1,
+                            Size = 50.0,
+                            Type = "Penthouse"
+                        },
+                        new
+                        {
+                            Id = 58L,
+                            ApartmentId = 58L,
+                            NumBathroom = 1,
+                            NumBedroom = 2,
+                            Size = 75.0,
+                            Type = "Studio"
+                        },
+                        new
+                        {
+                            Id = 59L,
+                            ApartmentId = 59L,
+                            NumBathroom = 2,
+                            NumBedroom = 3,
+                            Size = 100.0,
+                            Type = "One Bedroom"
+                        },
+                        new
+                        {
+                            Id = 60L,
+                            ApartmentId = 60L,
+                            NumBathroom = 1,
+                            NumBedroom = 1,
+                            Size = 50.0,
+                            Type = "Penthouse"
+                        },
+                        new
+                        {
+                            Id = 61L,
+                            ApartmentId = 61L,
+                            NumBathroom = 2,
+                            NumBedroom = 2,
+                            Size = 75.0,
+                            Type = "One Bedroom"
+                        },
+                        new
+                        {
+                            Id = 62L,
+                            ApartmentId = 62L,
+                            NumBathroom = 1,
+                            NumBedroom = 3,
+                            Size = 100.0,
+                            Type = "Studio"
+                        },
+                        new
+                        {
+                            Id = 63L,
+                            ApartmentId = 63L,
+                            NumBathroom = 2,
+                            NumBedroom = 1,
+                            Size = 50.0,
+                            Type = "Penthouse"
+                        },
+                        new
+                        {
+                            Id = 64L,
+                            ApartmentId = 64L,
+                            NumBathroom = 1,
+                            NumBedroom = 2,
+                            Size = 75.0,
+                            Type = "Studio"
+                        },
+                        new
+                        {
+                            Id = 65L,
+                            ApartmentId = 65L,
+                            NumBathroom = 2,
+                            NumBedroom = 3,
+                            Size = 100.0,
+                            Type = "One Bedroom"
+                        },
+                        new
+                        {
+                            Id = 66L,
+                            ApartmentId = 66L,
+                            NumBathroom = 1,
+                            NumBedroom = 1,
+                            Size = 50.0,
+                            Type = "Penthouse"
+                        },
+                        new
+                        {
+                            Id = 67L,
+                            ApartmentId = 67L,
+                            NumBathroom = 2,
+                            NumBedroom = 2,
+                            Size = 75.0,
+                            Type = "One Bedroom"
+                        },
+                        new
+                        {
+                            Id = 68L,
+                            ApartmentId = 68L,
+                            NumBathroom = 1,
+                            NumBedroom = 3,
+                            Size = 100.0,
+                            Type = "Studio"
+                        },
+                        new
+                        {
+                            Id = 69L,
+                            ApartmentId = 69L,
+                            NumBathroom = 2,
+                            NumBedroom = 1,
+                            Size = 50.0,
+                            Type = "Penthouse"
+                        },
+                        new
+                        {
+                            Id = 70L,
+                            ApartmentId = 70L,
+                            NumBathroom = 1,
+                            NumBedroom = 2,
+                            Size = 75.0,
+                            Type = "Studio"
+                        },
+                        new
+                        {
+                            Id = 71L,
+                            ApartmentId = 71L,
+                            NumBathroom = 2,
+                            NumBedroom = 3,
+                            Size = 100.0,
+                            Type = "One Bedroom"
+                        },
+                        new
+                        {
+                            Id = 72L,
+                            ApartmentId = 72L,
+                            NumBathroom = 1,
+                            NumBedroom = 1,
+                            Size = 50.0,
+                            Type = "Penthouse"
+                        },
+                        new
+                        {
+                            Id = 73L,
+                            ApartmentId = 73L,
+                            NumBathroom = 2,
+                            NumBedroom = 2,
+                            Size = 75.0,
+                            Type = "One Bedroom"
+                        },
+                        new
+                        {
+                            Id = 74L,
+                            ApartmentId = 74L,
+                            NumBathroom = 1,
+                            NumBedroom = 3,
+                            Size = 100.0,
+                            Type = "Studio"
+                        },
+                        new
+                        {
+                            Id = 75L,
+                            ApartmentId = 75L,
+                            NumBathroom = 2,
+                            NumBedroom = 1,
+                            Size = 50.0,
+                            Type = "Penthouse"
+                        },
+                        new
+                        {
+                            Id = 76L,
+                            ApartmentId = 76L,
+                            NumBathroom = 1,
+                            NumBedroom = 2,
+                            Size = 75.0,
+                            Type = "Studio"
+                        },
+                        new
+                        {
+                            Id = 77L,
+                            ApartmentId = 77L,
+                            NumBathroom = 2,
+                            NumBedroom = 3,
+                            Size = 100.0,
+                            Type = "One Bedroom"
+                        },
+                        new
+                        {
+                            Id = 78L,
+                            ApartmentId = 78L,
+                            NumBathroom = 1,
+                            NumBedroom = 1,
+                            Size = 50.0,
+                            Type = "Penthouse"
+                        },
+                        new
+                        {
+                            Id = 79L,
+                            ApartmentId = 79L,
+                            NumBathroom = 2,
+                            NumBedroom = 2,
+                            Size = 75.0,
+                            Type = "One Bedroom"
+                        },
+                        new
+                        {
+                            Id = 80L,
+                            ApartmentId = 80L,
+                            NumBathroom = 1,
+                            NumBedroom = 3,
+                            Size = 100.0,
+                            Type = "Studio"
+                        },
+                        new
+                        {
+                            Id = 81L,
+                            ApartmentId = 81L,
+                            NumBathroom = 2,
+                            NumBedroom = 1,
+                            Size = 50.0,
+                            Type = "Penthouse"
+                        },
+                        new
+                        {
+                            Id = 82L,
+                            ApartmentId = 82L,
+                            NumBathroom = 1,
+                            NumBedroom = 2,
+                            Size = 75.0,
+                            Type = "Studio"
+                        },
+                        new
+                        {
+                            Id = 83L,
+                            ApartmentId = 83L,
+                            NumBathroom = 2,
+                            NumBedroom = 3,
+                            Size = 100.0,
+                            Type = "One Bedroom"
+                        },
+                        new
+                        {
+                            Id = 84L,
+                            ApartmentId = 84L,
+                            NumBathroom = 1,
+                            NumBedroom = 1,
+                            Size = 50.0,
+                            Type = "Penthouse"
+                        },
+                        new
+                        {
+                            Id = 85L,
+                            ApartmentId = 85L,
+                            NumBathroom = 2,
+                            NumBedroom = 2,
+                            Size = 75.0,
+                            Type = "One Bedroom"
+                        },
+                        new
+                        {
+                            Id = 86L,
+                            ApartmentId = 86L,
+                            NumBathroom = 1,
+                            NumBedroom = 3,
+                            Size = 100.0,
+                            Type = "Studio"
+                        },
+                        new
+                        {
+                            Id = 87L,
+                            ApartmentId = 87L,
+                            NumBathroom = 2,
+                            NumBedroom = 1,
+                            Size = 50.0,
+                            Type = "Penthouse"
+                        },
+                        new
+                        {
+                            Id = 88L,
+                            ApartmentId = 88L,
+                            NumBathroom = 1,
+                            NumBedroom = 2,
+                            Size = 75.0,
+                            Type = "Studio"
+                        },
+                        new
+                        {
+                            Id = 89L,
+                            ApartmentId = 89L,
+                            NumBathroom = 2,
+                            NumBedroom = 3,
+                            Size = 100.0,
+                            Type = "One Bedroom"
+                        },
+                        new
+                        {
+                            Id = 90L,
+                            ApartmentId = 90L,
+                            NumBathroom = 1,
+                            NumBedroom = 1,
+                            Size = 50.0,
+                            Type = "Penthouse"
+                        },
+                        new
+                        {
+                            Id = 91L,
+                            ApartmentId = 91L,
+                            NumBathroom = 2,
+                            NumBedroom = 2,
+                            Size = 75.0,
+                            Type = "One Bedroom"
+                        },
+                        new
+                        {
+                            Id = 92L,
+                            ApartmentId = 92L,
+                            NumBathroom = 1,
+                            NumBedroom = 3,
+                            Size = 100.0,
+                            Type = "Studio"
+                        },
+                        new
+                        {
+                            Id = 93L,
+                            ApartmentId = 93L,
+                            NumBathroom = 2,
+                            NumBedroom = 1,
+                            Size = 50.0,
+                            Type = "Penthouse"
+                        },
+                        new
+                        {
+                            Id = 94L,
+                            ApartmentId = 94L,
+                            NumBathroom = 1,
+                            NumBedroom = 2,
+                            Size = 75.0,
+                            Type = "Studio"
+                        },
+                        new
+                        {
+                            Id = 95L,
+                            ApartmentId = 95L,
+                            NumBathroom = 2,
+                            NumBedroom = 3,
+                            Size = 100.0,
+                            Type = "One Bedroom"
+                        },
+                        new
+                        {
+                            Id = 96L,
+                            ApartmentId = 96L,
+                            NumBathroom = 1,
+                            NumBedroom = 1,
+                            Size = 50.0,
+                            Type = "Penthouse"
+                        },
+                        new
+                        {
+                            Id = 97L,
+                            ApartmentId = 97L,
+                            NumBathroom = 2,
+                            NumBedroom = 2,
+                            Size = 75.0,
+                            Type = "One Bedroom"
+                        },
+                        new
+                        {
+                            Id = 98L,
+                            ApartmentId = 98L,
+                            NumBathroom = 1,
+                            NumBedroom = 3,
+                            Size = 100.0,
+                            Type = "Studio"
+                        },
+                        new
+                        {
+                            Id = 99L,
+                            ApartmentId = 99L,
+                            NumBathroom = 2,
+                            NumBedroom = 1,
+                            Size = 50.0,
+                            Type = "Penthouse"
+                        },
+                        new
+                        {
+                            Id = 100L,
+                            ApartmentId = 100L,
+                            NumBathroom = 1,
+                            NumBedroom = 2,
+                            Size = 75.0,
+                            Type = "Studio"
+                        });
                 });
 
             modelBuilder.Entity("Server.Common.Models.Building", b =>
@@ -337,6 +1889,38 @@ namespace Server.DataAccess.Migrations
                     b.HasIndex("UrbanId");
 
                     b.ToTable("Buildings");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            BuildingAddress = "123 Main St",
+                            BuildingName = "Sunrise Tower",
+                            ModuleId = 1L,
+                            NumberFloor = 10,
+                            TenantId = 1L,
+                            UrbanId = 1L
+                        },
+                        new
+                        {
+                            Id = 2L,
+                            BuildingAddress = "456 Elm St",
+                            BuildingName = "Moonlight Apartments",
+                            ModuleId = 1L,
+                            NumberFloor = 15,
+                            TenantId = 2L,
+                            UrbanId = 2L
+                        },
+                        new
+                        {
+                            Id = 3L,
+                            BuildingAddress = "789 Elm St",
+                            BuildingName = "Building C",
+                            ModuleId = 1L,
+                            NumberFloor = 8,
+                            TenantId = 3L,
+                            UrbanId = 3L
+                        });
                 });
 
             modelBuilder.Entity("Server.Common.Models.Document", b =>
@@ -350,17 +1934,14 @@ namespace Server.DataAccess.Migrations
                     b.Property<long>("AccountId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("BuildingAddress")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<long>("ApartmentId")
+                        .HasColumnType("bigint");
 
-                    b.Property<string>("BuildingName")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<long>("BuildingId")
+                        .HasColumnType("bigint");
 
                     b.Property<long>("ModuleId")
                         .HasColumnType("bigint");
-
-                    b.Property<int>("RoomNumber")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("datetime2");
@@ -368,6 +1949,10 @@ namespace Server.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("AccountId");
+
+                    b.HasIndex("ApartmentId");
+
+                    b.HasIndex("BuildingId");
 
                     b.HasIndex("ModuleId");
 
@@ -783,6 +2368,44 @@ namespace Server.DataAccess.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("RolePermissions");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            PermissionId = 1L,
+                            RoleId = 1L
+                        },
+                        new
+                        {
+                            Id = 2L,
+                            PermissionId = 2L,
+                            RoleId = 1L
+                        },
+                        new
+                        {
+                            Id = 3L,
+                            PermissionId = 3L,
+                            RoleId = 1L
+                        },
+                        new
+                        {
+                            Id = 4L,
+                            PermissionId = 4L,
+                            RoleId = 1L
+                        },
+                        new
+                        {
+                            Id = 5L,
+                            PermissionId = 13L,
+                            RoleId = 1L
+                        },
+                        new
+                        {
+                            Id = 6L,
+                            PermissionId = 14L,
+                            RoleId = 1L
+                        });
                 });
 
             modelBuilder.Entity("Server.Common.Models.Tenant", b =>
@@ -843,6 +2466,23 @@ namespace Server.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UrbanAreas");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            UrbanAddress = "Urban Area 1"
+                        },
+                        new
+                        {
+                            Id = 2L,
+                            UrbanAddress = "Urban Area 2"
+                        },
+                        new
+                        {
+                            Id = 3L,
+                            UrbanAddress = "Urban Area 3"
+                        });
                 });
 
             modelBuilder.Entity("ModulePermission", b =>
@@ -865,7 +2505,7 @@ namespace Server.DataAccess.Migrations
                     b.HasOne("Server.Common.Models.RefreshToken", "RefreshToken")
                         .WithMany("AccessTokens")
                         .HasForeignKey("RtId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("RefreshToken");
@@ -1000,6 +2640,18 @@ namespace Server.DataAccess.Migrations
                     b.HasOne("Server.Common.Models.Account", "Account")
                         .WithMany("Documents")
                         .HasForeignKey("AccountId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Server.Common.Models.Apartment", "Apartment")
+                        .WithMany()
+                        .HasForeignKey("ApartmentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Server.Common.Models.Building", "Building")
+                        .WithMany()
+                        .HasForeignKey("BuildingId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -1011,6 +2663,10 @@ namespace Server.DataAccess.Migrations
 
                     b.Navigation("Account");
 
+                    b.Navigation("Apartment");
+
+                    b.Navigation("Building");
+
                     b.Navigation("Module");
                 });
 
@@ -1019,7 +2675,7 @@ namespace Server.DataAccess.Migrations
                     b.HasOne("Server.Common.Models.Document", "Document")
                         .WithMany("DocumentDetails")
                         .HasForeignKey("DocumentId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Document");
@@ -1030,7 +2686,7 @@ namespace Server.DataAccess.Migrations
                     b.HasOne("Server.Common.Models.Account", "Account")
                         .WithMany("FormResidentRequests")
                         .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Server.Common.Models.Module", "Module")
@@ -1086,7 +2742,7 @@ namespace Server.DataAccess.Migrations
                     b.HasOne("Server.Common.Models.Account", "Account")
                         .WithMany("RefreshTokens")
                         .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Account");
